@@ -1,9 +1,13 @@
+import ColumnView from "@/components/layout/ColumnView";
+import CategoryNavBar from "@/components/ui/cardapio/CategoryNavBar";
 import Header from "@/components/ui/cardapio/Header";
 
 export default function Home() {
+	const categories = ["Cookies Clássicos", "Big Cookies", "Cheesecakes", "Lanches", "Bebidas"]
 	return (
-		<main className="flex min-h-screen w-dvw select-none">
+		<ColumnView className="min-h-screen w-dvw select-none">
 			<Header />
-		</main>
+			<CategoryNavBar categories={categories}/>
+		</ColumnView>
 	);
 }
