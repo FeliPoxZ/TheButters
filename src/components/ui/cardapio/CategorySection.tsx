@@ -8,7 +8,7 @@ interface Props {
 
 function CategorySection({ category }: Props) {
 	return (
-		<section id={`${category.nome}`}>
+		<section id={`${category.nome}`} className="scroll-mt-16">
 			<Wrapper>
 				<h2 data-aos="fade" className="text-xl md:text-2xl font-semibold font-poppins text-foreground/85">{category.nome}</h2>
 				<Line aosAnimate/>
