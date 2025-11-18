@@ -8,11 +8,12 @@ html {
 :root {
 	--background: #f9edd3;
 	--foreground: #171717;
+	--light-foreground: #f2f2f2;
 	--banner: #febb6f;
 	--highlight: #f7ad59;
 	--primary: #1c63b2;
 	--secondary: #ff8b2f;
-	--item: #f2f2f2;
+	--item: #FDF7ED;
 	--soft-green: #7ccd7f;
 	--on-soft-green: #18691b;
 	--soft-red: #dd5151;
@@ -23,6 +24,7 @@ html {
 @theme inline {
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
+	--color-light-foreground: var(--light-foreground);
 	--color-banner: var(--banner);
 	--color-highlight: var(--highlight);
 	--color-primary: var(--primary);
