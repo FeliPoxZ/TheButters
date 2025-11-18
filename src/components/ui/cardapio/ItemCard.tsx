@@ -10,12 +10,10 @@ function ItemCard({ item }: Props) {
 	const price = new Intl.NumberFormat("pt-BR", {
 		style: "currency",
 		currency: "BRL",
-		notation: "compact",
-		maximumFractionDigits: 2,
 	}).format(item.preco);
 
 	return (
-		<div className="px-3 md:px-4 py-3 rounded-lg bg-item min-h-30 w-full max-w-[430px] shadow-md">
+		<div data-aos="fade" className="px-3 md:px-4 py-3 rounded-lg bg-item min-h-30 w-full max-w-[430px] shadow-md">
 			<RowView className="h-full" align="center">
 				<ColumnView justify="around" className="gap-3 w-full h-full">
 					<h3 className="font-semibold text-foreground/80 text-lg">{item.nome}</h3>

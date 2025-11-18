@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect } from "react";
+import AOS from "aos";
 import ColumnView from "@/components/layout/ColumnView";
 import CategoryNavBar from "@/components/ui/cardapio/CategoryNavBar";
 import CategorySection from "@/components/ui/cardapio/CategorySection";
@@ -225,11 +229,19 @@ const mockData: Category[] = [
 ];
 
 export default function Home() {
+	useEffect(() => {
+		AOS.init({
+			duration: 400,
+			once: true,
+			easing: "ease-in-out",
+			mirror: false,
+		});
+	}, []);
 	return (
 		<ColumnView className="min-h-screen w-dvw select-none">
 			<Header />
 			<CategoryNavBar categories={mockData} />
-			<div className="mt-5">
+			<div className="my-6">
 				{mockData.map((category) => (
 					<CategorySection key={`${category.nome} section`} category={category} />
 				))}

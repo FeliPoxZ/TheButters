@@ -17,18 +17,21 @@ export default function CategoryNavBar({ categories }: Props) {
 		rubberband: true,
 		slides: {
 			perView: "auto",
-			spacing: 24,
+			/* spacing: 24, */
 		},
 		renderMode: "performance",
 	});
 
 	return (
-		<nav className="bg-primary sticky -top-px pl-5 md:pl-11 shadow-md w-full">
+		<nav className="bg-primary sticky -top-px pl-5 md:pl-11 shadow-md w-full z-10">
 			<div ref={sliderRef} className="keen-slider overflow-visible">
 				{categories.map(({ nome }, i, arr) => (
 					<div
 						key={`${nome} nav-link`}
-						className={cn("keen-slider__slide w-auto! min-w-max! transition-all duration-200 flex")}
+						className={cn(
+							"keen-slider__slide w-auto! min-w-max! transition-all duration-200 flex",
+							i < arr.length - 1 && "mr-6"
+						)}
 					>
 						<Link
 							href={`#${nome}`}
