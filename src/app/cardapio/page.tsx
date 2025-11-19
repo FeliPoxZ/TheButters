@@ -7,6 +7,8 @@ import CategoryNavBar from "@/components/ui/cardapio/CategoryNavBar";
 import CategorySection from "@/components/ui/cardapio/CategorySection";
 import Header from "@/components/ui/cardapio/Header";
 import ItemModal from "@/components/ui/cardapio/ItemModal";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import MobileBag from "@/components/ui/cardapio/MobileBag";
 
 const mockData: Category[] = [
 	{
@@ -238,15 +240,19 @@ export default function Cardapio() {
 			mirror: false,
 		});
 	}, []);
+
+	const { width } = useWindowSize();
+
 	return (
 		<ColumnView className="min-h-screen w-dvw select-none">
 			<Header />
 			<CategoryNavBar categories={mockData} />
-			<div className="my-6">
+			<div className="mt-6 mb-10">
 				{mockData.map((category) => (
 					<CategorySection key={`${category.nome} section`} category={category} />
 				))}
 			</div>
+			{width < 1000 ? <MobileBag /> : null}
 			<ItemModal />
 		</ColumnView>
 	);

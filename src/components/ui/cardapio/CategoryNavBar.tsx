@@ -67,7 +67,7 @@ export default function CategoryNavBar({ categories }: Props) {
 	}, [selectedCategory, categories, slider]);
 
 	return (
-		<nav className="bg-primary sticky -top-px pl-5 md:pl-11 shadow-md w-full z-10">
+		<nav className="bg-primary sticky -top-px pl-5 md:pl-11 shadow-lg w-full z-10">
 			<div ref={sliderRef} className="keen-slider overflow-visible">
 				{categories.map(({ nome }, i, arr) => (
 					<div
