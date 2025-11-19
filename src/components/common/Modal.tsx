@@ -20,7 +20,7 @@ export function Modal({ children, open, onBackdropClick, blur = true }: Props) {
 	return createPortal(
 		<div
 			className={cn(
-				"fixed z-50 h-dvh w-dvw top-0 bottom-0 bg-black/70 flex items-center justify-center",
+				"fixed z-50 h-screen w-screen top-0 bottom-0 bg-black/70 flex items-center justify-center",
 				blur && "backdrop-blur-[2px]s"
 			)}
 			onClick={onBackdropClick}

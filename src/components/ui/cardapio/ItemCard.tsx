@@ -20,8 +20,8 @@ function ItemCard({ item }: Props) {
 		<div data-aos="fade">
 			<button
 				className={cn(
-					"px-3 md:px-4 py-3 min-h-30 w-full max-w-[430px] rounded-lg bg-item text-left shadow-md cursor-pointer",
-					"hover:shadow-lg hover:scale-105 transition-all duration-250"
+					"px-3 md:px-4 py-3 min-h-30 max-w-full w-[430px] rounded-lg bg-item text-left shadow-md cursor-pointer",
+					"md:hover:shadow-lg md:hover:scale-105 transition-all duration-250"
 				)}
 				onClick={() => toggleItemModal(item)}
 			>

@@ -16,7 +16,7 @@ function ItemModal() {
 
 	return (
 		<Modal open={isOpen} onBackdropClick={() => toggleItemModal()}>
-			<div className="bg-item w-[700px] max-w-[80vw] h-[400px] max-h-[80vh] rounded-2xl relative shadow-2xl">
+			<div className="bg-item w-[700px] max-w-[90vw] h-[600px] md:h-[400px] max-h-[80vh] rounded-2xl relative shadow-2xl">
 				<button className="absolute right-0 cursor-pointer p-2" onClick={() => toggleItemModal()}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -29,15 +29,15 @@ function ItemModal() {
 						<path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
 					</svg>
 				</button>
-				<ColumnView justify="between" className="h-full p-8">
+				<ColumnView justify="between" className="h-full p-8 overflow-y-auto">
 					{item ? (
-						<RowView align="center">
-							<ColumnView justify="around" className="gap-3 w-full h-full">
-								<h3 className="font-semibold text-foreground/80 text-2xl">{item.nome}</h3>
-								<p className="text-foreground/90 text-xl">{item.descricao}</p>
-								<p className="font-semibold text-on-soft-green/90 text-xl">{price}</p>
+						<div className="flex flex-col md:flex-row items-center">
+							<ColumnView justify="around" className="gap-3 w-full md:h-full">
+								<h3 className="font-semibold text-foreground/80 text-xl md:text-2xl">{item.nome}</h3>
+								<p className="text-foreground/90 text-lg md:text-xl">{item.descricao}</p>
+								<p className="font-semibold text-on-soft-green/90 text-lg md:text-xl">{price}</p>
 							</ColumnView>
-							<div className="h-[250px] w-[250px] min-w-[250px] my-2 ml-3">
+							<div className="h-[250px] w-[250px] min-w-[250px] my-4 md:my-2 md:ml-3">
 								<Image
 									alt=""
 									src={"/CookiePlaceholder.png"}
@@ -46,7 +46,7 @@ function ItemModal() {
 									className="rounded-lg h-full w-full object-cover"
 								/>
 							</div>
-						</RowView>
+						</div>
 					) : null}
 					<button className="self-center w-full cursor-pointer bg-secondary/70 py-3 rounded-xl transition-all duration-300 hover:bg-secondary/90 shadow-sm">
 						<RowView align="center" justify="center" className="gap-3">
