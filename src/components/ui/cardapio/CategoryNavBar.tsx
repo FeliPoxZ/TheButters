@@ -36,7 +36,7 @@ export default function CategoryNavBar({ categories }: Props) {
 		setObserverPaused(true);
 		setTimeout(() => {
 			waitingScrollRef.current = true;
-		}, ms("2s"));
+		}, ms("1s"));
 
 		// ---- Mover o slider até o item clicado ----
 		if (slider.current) {
@@ -78,8 +78,12 @@ export default function CategoryNavBar({ categories }: Props) {
 						)}
 					>
 						<Link
-							href={`#${nome}`}
-							onClick={() => handleCategoryClick(nome, i)}
+							href={""}
+							onClick={(e) => {
+								e.preventDefault();
+								document.getElementById(nome)?.scrollIntoView({behavior: "smooth"})
+								handleCategoryClick(nome, i);
+							}}
 							className={cn(
 								"text-light-foreground text-lg md:text-xl h-full pt-2 pb-1 transition-all duration-200 shrink-0 whitespace-nowrap  border-b-4 border-b-transparent",
 								selectedCategory === nome && "text-highlight font-semibold border-b-highlight"

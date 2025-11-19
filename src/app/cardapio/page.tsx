@@ -6,6 +6,7 @@ import ColumnView from "@/components/layout/ColumnView";
 import CategoryNavBar from "@/components/ui/cardapio/CategoryNavBar";
 import CategorySection from "@/components/ui/cardapio/CategorySection";
 import Header from "@/components/ui/cardapio/Header";
+import ItemModal from "@/components/ui/cardapio/ItemModal";
 
 const mockData: Category[] = [
 	{
@@ -228,7 +229,7 @@ const mockData: Category[] = [
 	},
 ];
 
-export default function Home() {
+export default function Cardapio() {
 	useEffect(() => {
 		AOS.init({
 			duration: 400,
@@ -246,6 +247,7 @@ export default function Home() {
 					<CategorySection key={`${category.nome} section`} category={category} />
 				))}
 			</div>
+			<ItemModal />
 		</ColumnView>
 	);
 }

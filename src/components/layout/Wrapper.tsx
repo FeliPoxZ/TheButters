@@ -1,7 +1,7 @@
-import { ReactElement } from "react";
+import { ReactNode } from "react";
 
 interface Props {
-	children: ReactElement | ReactElement[];
+	children: ReactNode | ReactNode[];
 }
 
 function Wrapper({ children }: Props) {

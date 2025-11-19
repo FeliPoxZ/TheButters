@@ -12,7 +12,7 @@ function CategorySection({ category }: Props) {
 			<Wrapper>
 				<h2 data-aos="fade" className="text-xl md:text-2xl font-semibold font-poppins text-foreground/85">{category.nome}</h2>
 				<Line aosAnimate/>
-				<div className="my-4 md:my-6 gap-4 flex flex-col md:flex-row md:flex-wrap">
+				<div className="my-4 md:my-6 gap-5 flex flex-col md:flex-row md:flex-wrap">
 					{category.produtos.map((product) => (
 						<ItemCard key={`${product.nome} product`} item={product} />
 					))}
