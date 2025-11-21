@@ -1,13 +1,13 @@
 import { Modal } from "@/components/common/Modal";
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
-import { useItemModalStore } from "@/stores/itemModalStore";
+import { useProductModalStore } from "@/stores/productModalStore";
 import Image from "next/image";
 
-function ItemModal() {
-	const item = useItemModalStore((s) => s.item);
-	const isOpen = useItemModalStore((s) => s.isOpen);
-	const toggleItemModal = useItemModalStore((s) => s.toggleItemModal);
+function ProductModal() {
+	const item = useProductModalStore((s) => s.item);
+	const isOpen = useProductModalStore((s) => s.isOpen);
+	const toggleProductModal = useProductModalStore((s) => s.toggleProductModal);
 
 	const price = new Intl.NumberFormat("pt-BR", {
 		style: "currency",
@@ -15,9 +15,9 @@ function ItemModal() {
 	}).format(item ? item.preco : 0);
 
 	return (
-		<Modal open={isOpen} onBackdropClick={() => toggleItemModal()}>
+		<Modal open={isOpen} onBackdropClick={() => toggleProductModal()}>
 			<div className="bg-item w-[700px] max-w-[90vw] h-[600px] md:h-[400px] max-h-[80vh] rounded-2xl relative shadow-2xl">
-				<button className="absolute right-0 cursor-pointer p-2" onClick={() => toggleItemModal()}>
+				<button className="absolute right-0 cursor-pointer p-2" onClick={() => toggleProductModal()}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
@@ -73,4 +73,4 @@ function ItemModal() {
 	);
 }
 
-export default ItemModal;
+export default ProductModal;

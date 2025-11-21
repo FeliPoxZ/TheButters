@@ -1,6 +1,6 @@
 import Line from "@/components/common/Line";
 import Wrapper from "@/components/layout/Wrapper";
-import ItemCard from "./ItemCard";
+import ProductCard from "./ProductCard";
 
 interface Props {
 	category: Category;
@@ -14,7 +14,7 @@ function CategorySection({ category }: Props) {
 				<Line aosAnimate/>
 				<div className="my-4 md:my-6 gap-5 flex flex-col md:flex-row md:flex-wrap">
 					{category.produtos.map((product) => (
-						<ItemCard key={`${product.nome} product`} item={product} />
+						<ProductCard key={`${product.nome} product`} item={product} />
 					))}
 				</div>
 			</Wrapper>

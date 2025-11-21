@@ -1,20 +1,20 @@
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
 import { cn } from "@/lib/utils";
-import { useItemModalStore } from "@/stores/itemModalStore";
+import { useProductModalStore } from "@/stores/productModalStore";
 import Image from "next/image";
 
 interface Props {
 	item: Product;
 }
 
-function ItemCard({ item }: Props) {
+function ProductCard({ item }: Props) {
 	const price = new Intl.NumberFormat("pt-BR", {
 		style: "currency",
 		currency: "BRL",
 	}).format(item.preco);
 
-	const toggleItemModal = useItemModalStore((s) => s.toggleItemModal);
+	const toggleProductModal = useProductModalStore((s) => s.toggleProductModal);
 
 	return (
 		<div data-aos="fade">
@@ -23,7 +23,7 @@ function ItemCard({ item }: Props) {
 					"px-3 md:px-4 py-3 min-h-30 max-w-full w-[430px] rounded-lg bg-item text-left shadow-md cursor-pointer",
 					"md:hover:shadow-lg md:hover:scale-105 transition-all duration-250"
 				)}
-				onClick={() => toggleItemModal(item)}
+				onClick={() => toggleProductModal(item)}
 			>
 				<RowView className="h-full" align="center">
 					<ColumnView justify="around" className="gap-3 w-full h-full">
@@ -46,4 +46,4 @@ function ItemCard({ item }: Props) {
 	);
 }
 
-export default ItemCard;
+export default ProductCard;
