@@ -2,6 +2,7 @@ import { Modal } from "@/components/common/Modal";
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
 import { useProductModalStore } from "@/stores/productModalStore";
+import useBagStore from "@/stores/useBagStore";
 import Image from "next/image";
 
 function ProductModal() {
@@ -14,10 +15,21 @@ function ProductModal() {
 		currency: "BRL",
 	}).format(item ? item.preco : 0);
 
+	const addToBag = useBagStore((s) => s.addToBag);
+
+	const handleClick = () => {
+		if (item) {
+			addToBag(item);
+		}
+	};
+
 	return (
 		<Modal open={isOpen} onBackdropClick={() => toggleProductModal()}>
 			<div className="bg-item w-[700px] max-w-[90vw] h-[600px] md:h-[400px] max-h-[80vh] rounded-2xl relative shadow-2xl">
-				<button className="absolute right-0 cursor-pointer p-2" onClick={() => toggleProductModal()}>
+				<button
+					className="absolute right-0 cursor-pointer p-2"
+					onClick={() => toggleProductModal()}
+				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
@@ -33,7 +45,9 @@ function ProductModal() {
 					{item ? (
 						<div className="flex flex-col md:flex-row items-center">
 							<ColumnView justify="around" className="gap-3 w-full md:h-full">
-								<h3 className="font-semibold text-foreground/80 text-xl md:text-2xl">{item.nome}</h3>
+								<h3 className="font-semibold text-foreground/80 text-xl md:text-2xl">
+									{item.nome}
+								</h3>
 								<p className="text-foreground/90 text-lg md:text-xl">{item.descricao}</p>
 								<p className="font-semibold text-on-soft-green/90 text-lg md:text-xl">{price}</p>
 							</ColumnView>
@@ -48,7 +62,7 @@ function ProductModal() {
 							</div>
 						</div>
 					) : null}
-					<button className="self-center w-full cursor-pointer bg-secondary/70 py-3 rounded-xl transition-all duration-300 hover:bg-secondary/90 shadow-sm">
+					<button onClick={handleClick} className="self-center w-full cursor-pointer bg-secondary/70 py-3 rounded-xl transition-all duration-300 hover:bg-secondary/90 shadow-sm">
 						<RowView align="center" justify="center" className="gap-3">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"

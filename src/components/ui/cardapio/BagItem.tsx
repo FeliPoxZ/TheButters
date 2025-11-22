@@ -1,13 +1,26 @@
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
+import useBagStore from "@/stores/useBagStore";
+import { toPrice } from "@/lib/utils";
 
-function BagItem() {
+interface Props {
+	item: Product;
+	itemIndex: number;
+}
+
+function BagItem({ item, itemIndex }: Props) {
+	const useItemQuantity = useBagStore((s) => s.useItemQuantity);
+	const increase = useBagStore((s) => s.increaseItemCount);
+	const decrease = useBagStore((s) => s.decreaseItemCount);
+
+	const qtd = useItemQuantity(itemIndex);
+
 	return (
 		<ColumnView className="w-full">
 			<RowView align="center" justify="between" className="w-full py-2">
-				<p className="font-semibold text-foreground/90">Cookie Tradicional</p>
-				<RowView align="center" className="gap-3">
-					<button className="p-1 bg-secondary/70 rounded-sm">
+				<p className="font-semibold text-foreground/90">{item.nome}</p>
+				<RowView align="center" className="gap-2">
+					<button className="p-1 bg-secondary/70 rounded-sm" onClick={() => decrease(itemIndex)}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -19,8 +32,8 @@ function BagItem() {
 							<path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
 						</svg>
 					</button>
-					<span>2</span>
-					<button className="p-1 bg-secondary/70 rounded-sm">
+					<span className="size-[18px] text-center">{qtd}</span>
+					<button className="p-1 bg-secondary/70 rounded-sm" onClick={() => increase(itemIndex)}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -36,11 +49,11 @@ function BagItem() {
 			</RowView>
 			<RowView align="baseline" className="text-sm w-full">
 				<RowView className="gap-2">
-					<p>2x</p>
-					<p>R$ 5,00</p>
+					<p>{qtd}x</p>
+					<p>{toPrice(item.preco)}</p>
 				</RowView>
 				<hr className="flex-1 border-b border-dotted mx-2" />
-				<p className="font-semibold text-on-soft-green/80">R$ 10,00</p>
+				<p className="font-semibold text-on-soft-green/80">{toPrice(qtd * item.preco)}</p>
 			</RowView>
 			<hr className="bg-[#BEBEBE] h-px w-full border-0 my-3" />
 		</ColumnView>

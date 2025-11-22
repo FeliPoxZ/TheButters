@@ -1,11 +1,21 @@
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { cn, toPrice } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import BagItem from "./BagItem";
+import useBagStore from "@/stores/useBagStore";
 
 function MobileBag() {
 	const [isBagOpen, setBagOpen] = useState(true);
+	const [total, setTotal] = useState(0)
+
+	const items = useBagStore((s) => s.items);
+	const getTotal = useBagStore((s) => s.useBagTotal);
+	const clearBag = useBagStore((s) => s.clearBag);
+
+	useEffect(() => {
+		setTotal(getTotal())
+	}, [items, getTotal])
 
 	return (
 		<>
@@ -56,21 +66,18 @@ function MobileBag() {
 					</button>
 					<ColumnView className="h-full w-full gap-3">
 						<div className="bg-item/90 h-full w-full rounded-md px-3 py-2 overflow-y-auto">
-							<BagItem/>
-							<BagItem/>
-							<BagItem/>
-							<BagItem/>
-							<BagItem/>
-							<BagItem/>
+							{items.map(({ item }, i) => (
+								<BagItem key={"bag mobile " + item.nome} item={item} itemIndex={i} />
+							))}
 						</div>
 						<div className="bg-item/90 h-fit w-full rounded-md px-3 py-2">
 							<RowView align="center" justify="between">
 								<ColumnView>
 									<p className="text-foreground/90 font-semibold">Total</p>
-									<p className="text-on-soft-green/90 font-semibold">R$ 10,00</p>
+									<p className="text-on-soft-green/90 font-semibold">{toPrice(total)}</p>
 								</ColumnView>
 								<RowView className="gap-2">
-									<button className="size-10 bg-on-soft-red/60 rounded-sm">
+									<button className="size-10 bg-on-soft-red/60 rounded-sm" onClick={clearBag}>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											fill="none"
