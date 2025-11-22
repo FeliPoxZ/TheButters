@@ -1,9 +1,9 @@
-import ms from "ms";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface BagStore {
 	items: ItemBag[];
+	/* timestamp: number; */
 	addToBag: (item: Product) => void;
 	removeFromBag: (index: number) => void;
 	increaseItemCount: (index: number) => void;
@@ -11,14 +11,14 @@ interface BagStore {
 	clearBag: () => void;
 	useBagTotal: () => number;
 	useItemQuantity: (index: number) => number;
+	useBagQuantity: () => number;
 }
-
-/* const TTL = ms('10s') */
 
 const useBagStore = create(
 	persist<BagStore>(
 		(set, get) => ({
 			items: [],
+			/* timestamp: Date.now(), */
 
 			addToBag(product) {
 				set((store) => {
@@ -82,6 +82,11 @@ const useBagStore = create(
 				const current = items[index];
 				if (current) return current.qtd;
 				return 0;
+			},
+
+			useBagQuantity() {
+				const items = get().items;
+				return items.reduce((sum, it) => sum + it.qtd, 0);
 			},
 		}),
 		{

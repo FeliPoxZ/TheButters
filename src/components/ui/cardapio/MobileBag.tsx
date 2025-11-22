@@ -1,21 +1,42 @@
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
 import { cn, toPrice } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BagItem from "./BagItem";
 import useBagStore from "@/stores/useBagStore";
 
 function MobileBag() {
 	const [isBagOpen, setBagOpen] = useState(true);
-	const [total, setTotal] = useState(0)
+	const [total, setTotal] = useState(0);
+	const [notify, setNotify] = useState(false);
 
 	const items = useBagStore((s) => s.items);
 	const getTotal = useBagStore((s) => s.useBagTotal);
 	const clearBag = useBagStore((s) => s.clearBag);
+	const getBagQuantity = useBagStore((s) => s.useBagQuantity);
+
+	const prevCountRef = useRef(getBagQuantity());
 
 	useEffect(() => {
-		setTotal(getTotal())
-	}, [items, getTotal])
+		setTotal(getTotal());
+
+		const prevCount = prevCountRef.current;
+		const currentCount = getBagQuantity();
+
+		// Se adicionou item (aumentou)
+		if (currentCount > prevCount) {
+			// ativa notificação somente se a bag estiver fechada
+			if (!isBagOpen && currentCount !== 0) setNotify(true);
+		}
+
+		// se abrir a bag → remove notificação
+		if (isBagOpen) {
+			setNotify(false);
+		}
+
+		// atualiza o contador anterior
+		prevCountRef.current = currentCount;
+	}, [items, isBagOpen, getTotal]);
 
 	return (
 		<>
@@ -33,6 +54,17 @@ function MobileBag() {
 						border-bottom: 10px solid var(--banner);
 						border-right: 10px solid var(--banner);
 					}
+					.bag-button.notify::after {
+						content: "";
+						position: absolute;
+						width: 18px;
+						aspect-ratio: 1/1;
+						border-radius: 9999px;
+						background-color: var(--on-soft-red);
+						left: -2px;
+						top: -2px;
+						filter: drop-shadow(0 0 2px #00000050);
+					}
 					.bag-bar-mobile {
 						filter: drop-shadow(0 0 8px #00000050);
 					}
@@ -47,7 +79,10 @@ function MobileBag() {
 				<div className="relative w-full h-full p-3">
 					<button
 						onClick={() => setBagOpen(!isBagOpen)}
-						className="absolute bg-banner size-14 -top-[54px] right-0 rounded-tl-[50%] bag-button flex justify-center items-center"
+						className={cn(
+							"absolute bg-banner size-14 -top-[54px] right-0 rounded-tl-[50%] bag-button flex justify-center items-center",
+							notify && "notify"
+						)}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"

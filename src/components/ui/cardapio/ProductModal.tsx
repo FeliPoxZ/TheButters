@@ -3,12 +3,16 @@ import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
 import { useProductModalStore } from "@/stores/productModalStore";
 import useBagStore from "@/stores/useBagStore";
+import ms from "ms";
 import Image from "next/image";
+import { useState } from "react";
 
 function ProductModal() {
 	const item = useProductModalStore((s) => s.item);
 	const isOpen = useProductModalStore((s) => s.isOpen);
 	const toggleProductModal = useProductModalStore((s) => s.toggleProductModal);
+
+	const [isLoading, setLoading] = useState(false);
 
 	const price = new Intl.NumberFormat("pt-BR", {
 		style: "currency",
@@ -19,7 +23,12 @@ function ProductModal() {
 
 	const handleClick = () => {
 		if (item) {
+			setLoading(true);
 			addToBag(item);
+			setTimeout(() => {
+				setLoading(false);
+				toggleProductModal();
+			}, ms("200ms"));
 		}
 	};
 
@@ -29,6 +38,7 @@ function ProductModal() {
 				<button
 					className="absolute right-0 cursor-pointer p-2"
 					onClick={() => toggleProductModal()}
+					disabled={isLoading}
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +72,11 @@ function ProductModal() {
 							</div>
 						</div>
 					) : null}
-					<button onClick={handleClick} className="self-center w-full cursor-pointer bg-secondary/70 py-3 rounded-xl transition-all duration-300 hover:bg-secondary/90 shadow-sm">
+					<button
+						onClick={handleClick}
+						disabled={isLoading}
+						className="self-center w-full cursor-pointer bg-secondary/70 py-3 rounded-xl transition-all duration-300 hover:bg-secondary/90 shadow-sm disabled:bg-secondary/30"
+					>
 						<RowView align="center" justify="center" className="gap-3">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"

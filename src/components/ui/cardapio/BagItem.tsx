@@ -20,7 +20,7 @@ function BagItem({ item, itemIndex }: Props) {
 			<RowView align="center" justify="between" className="w-full py-2">
 				<p className="font-semibold text-foreground/90">{item.nome}</p>
 				<RowView align="center" className="gap-2">
-					<button className="p-1 bg-secondary/70 rounded-sm" onClick={() => decrease(itemIndex)}>
+					<button className="p-1 bg-secondary/70 rounded-sm disabled:bg-secondary/30" disabled={qtd === 1} onClick={() => decrease(itemIndex)}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -33,7 +33,7 @@ function BagItem({ item, itemIndex }: Props) {
 						</svg>
 					</button>
 					<span className="size-[18px] text-center">{qtd}</span>
-					<button className="p-1 bg-secondary/70 rounded-sm" onClick={() => increase(itemIndex)}>
+					<button className="p-1 bg-secondary/70 rounded-sm disabled:bg-secondary/30" disabled={qtd === 99} onClick={() => increase(itemIndex)}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
