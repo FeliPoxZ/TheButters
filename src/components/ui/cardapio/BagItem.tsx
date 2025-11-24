@@ -12,6 +12,7 @@ function BagItem({ item, itemIndex }: Props) {
 	const useItemQuantity = useBagStore((s) => s.useItemQuantity);
 	const increase = useBagStore((s) => s.increaseItemCount);
 	const decrease = useBagStore((s) => s.decreaseItemCount);
+	const remove = useBagStore((s) => s.removeFromBag)
 
 	const qtd = useItemQuantity(itemIndex);
 
@@ -20,7 +21,26 @@ function BagItem({ item, itemIndex }: Props) {
 			<RowView align="center" justify="between" className="w-full py-2">
 				<p className="font-semibold text-foreground/90">{item.nome}</p>
 				<RowView align="center" className="gap-2">
-					<button className="p-1 bg-secondary/70 rounded-sm disabled:bg-secondary/30" disabled={qtd === 1} onClick={() => decrease(itemIndex)}>
+					<button
+						className="p-1 bg-on-soft-red/50 rounded-sm"
+						onClick={() => remove(itemIndex)}
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							strokeWidth={1.5}
+							stroke="currentColor"
+							className="size-[18px]"
+						>
+							<path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+						</svg>
+					</button>
+					<button
+						className="p-1 bg-secondary/70 rounded-sm disabled:bg-secondary/30"
+						disabled={qtd === 1}
+						onClick={() => decrease(itemIndex)}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -33,7 +53,11 @@ function BagItem({ item, itemIndex }: Props) {
 						</svg>
 					</button>
 					<span className="size-[18px] text-center">{qtd}</span>
-					<button className="p-1 bg-secondary/70 rounded-sm disabled:bg-secondary/30" disabled={qtd === 99} onClick={() => increase(itemIndex)}>
+					<button
+						className="p-1 bg-secondary/70 rounded-sm disabled:bg-secondary/30"
+						disabled={qtd === 99}
+						onClick={() => increase(itemIndex)}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"

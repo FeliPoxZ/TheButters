@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 
 interface BagStore {
 	items: ItemBag[];
-	/* timestamp: number; */
 	addToBag: (item: Product) => void;
 	removeFromBag: (index: number) => void;
 	increaseItemCount: (index: number) => void;
@@ -18,7 +17,6 @@ const useBagStore = create(
 	persist<BagStore>(
 		(set, get) => ({
 			items: [],
-			/* timestamp: Date.now(), */
 
 			addToBag(product) {
 				set((store) => {
