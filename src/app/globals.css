@@ -50,6 +50,14 @@ body {
 	filter: drop-shadow(0 0 8px #00000050);
 }
 
+.bag-bar button {
+	@apply cursor-pointer 
+}
+
+.bag-bar button:not(.bag-button) {
+	@apply hover:scale-105 transition-all duration-300
+}
+
 .bag-button::before {
 	content: "";
 	position: absolute;
