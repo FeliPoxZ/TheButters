@@ -6,6 +6,7 @@ import useBagStore from "@/stores/useBagStore";
 import ms from "ms";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 function ProductModal() {
 	const item = useProductModalStore((s) => s.item);
@@ -28,6 +29,7 @@ function ProductModal() {
 			setTimeout(() => {
 				setLoading(false);
 				toggleProductModal();
+				toast.info("Produto adicionado!");
 			}, ms("200ms"));
 		}
 	};

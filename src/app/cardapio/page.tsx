@@ -8,6 +8,7 @@ import CategorySection from "@/components/ui/cardapio/CategorySection";
 import Header from "@/components/ui/cardapio/Header";
 import ProductModal from "@/components/ui/cardapio/ProductModal";
 import Bag from "@/components/ui/cardapio/Bag";
+import { Bounce, ToastContainer } from "react-toastify";
 
 const mockData: Category[] = [
 	{
@@ -251,6 +252,19 @@ export default function Cardapio() {
 			</div>
 			<Bag />
 			<ProductModal />
+			<ToastContainer
+				position="top-center"
+				autoClose={1500}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick={false}
+				rtl={false}
+				pauseOnFocusLoss={false}
+				draggable={false}
+				pauseOnHover={false}
+				theme="light"
+				transition={Bounce}
+			/>
 		</ColumnView>
 	);
 }
