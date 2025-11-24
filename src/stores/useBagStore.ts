@@ -1,8 +1,10 @@
+import ms from "ms";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface BagStore {
 	items: ItemBag[];
+	timestamp: number;
 	addToBag: (item: Product) => void;
 	removeFromBag: (index: number) => void;
 	increaseItemCount: (index: number) => void;
@@ -13,10 +15,13 @@ interface BagStore {
 	useBagQuantity: () => number;
 }
 
+const TLL = ms("1h")
+
 const useBagStore = create(
 	persist<BagStore>(
 		(set, get) => ({
 			items: [],
+			timestamp: Date.now(),
 
 			addToBag(product) {
 				set((store) => {
@@ -34,6 +39,7 @@ const useBagStore = create(
 
 					return {
 						items: [...store.items, { item: product, qtd: 1 } as ItemBag],
+						timestamp: Date.now(),
 					};
 				});
 			},
@@ -41,6 +47,7 @@ const useBagStore = create(
 			removeFromBag(index) {
 				set((store) => ({
 					items: store.items.filter((_, i) => i !== index),
+					timestamp: Date.now(),
 				}));
 			},
 
@@ -51,6 +58,7 @@ const useBagStore = create(
 
 					return {
 						items: store.items.map((it, i) => (i === index ? { ...it, qtd: it.qtd + 1 } : it)),
+						timestamp: Date.now(),
 					};
 				});
 			},
@@ -62,12 +70,13 @@ const useBagStore = create(
 
 					return {
 						items: store.items.map((it, i) => (i === index ? { ...it, qtd: it.qtd - 1 } : it)),
+						timestamp: Date.now(),
 					};
 				});
 			},
 
 			clearBag() {
-				set({ items: [] });
+				set({ items: [], timestamp: Date.now() });
 			},
 
 			useBagTotal() {
@@ -89,6 +98,14 @@ const useBagStore = create(
 		}),
 		{
 			name: "bag-store",
+			onRehydrateStorage: () => (state, error) => {
+				if (!error) {
+					const now = Date.now();
+					if (now > (state?.timestamp ?? 0) + TLL) {
+						state?.clearBag();
+					}
+				}
+			},
 		}
 	)
 );

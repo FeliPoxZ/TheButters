@@ -7,7 +7,7 @@ import CategoryNavBar from "@/components/ui/cardapio/CategoryNavBar";
 import CategorySection from "@/components/ui/cardapio/CategorySection";
 import Header from "@/components/ui/cardapio/Header";
 import ProductModal from "@/components/ui/cardapio/ProductModal";
-import MobileBag from "@/components/ui/cardapio/MobileBag";
+import Bag from "@/components/ui/cardapio/Bag";
 
 const mockData: Category[] = [
 	{
@@ -249,7 +249,7 @@ export default function Cardapio() {
 					<CategorySection key={`${category.nome} section`} category={category} />
 				))}
 			</div>
-			<MobileBag /> 
+			<Bag />
 			<ProductModal />
 		</ColumnView>
 	);
