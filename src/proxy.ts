@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { isDev } from "./lib/utils";
+import { isDevDB } from "./lib/mode";
 
 export function proxy(req: NextRequest) {
 	const { pathname } = req.nextUrl;
-
-	// Rotas públicas de páginas
-	const publicRoutes = ["/cardapio"];
 
 	// Permitir assets internos
 	if (
@@ -16,14 +15,54 @@ export function proxy(req: NextRequest) {
 		return NextResponse.next();
 	}
 
-	// Verificar páginas protegidas
-	if (!publicRoutes.includes(pathname)) {
+	//
+	// 🔧 AMBIENTE DE DESENVOLVIMENTO
+	//
+	if (isDev) {
+		// Se estiver na home "/" → redirecionar para /dev/cardapio
+		if (pathname === "/") {
+			return NextResponse.redirect(new URL("/dev/cardapio", req.url));
+		}
+
+		// Permite rotas dev
+		if (pathname.startsWith("/dev")) {
+			return NextResponse.next();
+		}
+
+		// Simulação em dev do /gestao/*
+		if (isDevDB && pathname.startsWith("/gestao")) {
+			const token = req.cookies.get("token")?.value;
+
+			// Se não tem token → login
+			if (!token && !pathname.startsWith("/gestao/auth")) {
+				return NextResponse.redirect(new URL("/gestao/auth", req.url));
+			}
+		}
+
+		// Qualquer outra rota é permitida em dev
+		return NextResponse.next();
+	}
+
+	//
+	// 🚀 AMBIENTE DE PRODUÇÃO
+	//
+
+	// Bloqueia /dev/* em produção
+	if (pathname.startsWith("/dev")) {
+		return new NextResponse("Rota indisponível em produção", { status: 404 });
+	}
+
+	// 🔒 PROTEGE /gestao/*
+	if (pathname.startsWith("/gestao")) {
 		const token = req.cookies.get("token")?.value;
+
+		// Se não tiver token → redireciona para login
 		if (!token) {
-			return NextResponse.redirect(new URL("/cardapio", req.url));
+			return NextResponse.redirect(new URL("/gestao/auth", req.url));
 		}
 	}
 
+	// Rotas liberadas
 	return NextResponse.next();
 }
 

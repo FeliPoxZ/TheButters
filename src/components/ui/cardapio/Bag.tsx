@@ -3,7 +3,7 @@ import RowView from "@/components/layout/RowView";
 import { cn, toPrice } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import BagItem from "./BagItem";
-import useBagStore from "@/stores/useBagStore";
+import useBagStore from "@/app/[slug]/stores/useBagStore";
 
 function Bag() {
 	const [isBagOpen, setBagOpen] = useState(false);

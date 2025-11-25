@@ -1,0 +1,1 @@
+type UserSummary = Omit<User, "senha">;

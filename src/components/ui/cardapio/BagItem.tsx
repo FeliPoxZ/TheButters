@@ -1,6 +1,6 @@
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
-import useBagStore from "@/stores/useBagStore";
+import useBagStore from "@/app/[slug]/stores/useBagStore";
 import { toPrice } from "@/lib/utils";
 
 interface Props {

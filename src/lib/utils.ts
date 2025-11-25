@@ -11,3 +11,5 @@ export const toPrice = (price: number) => {
 		currency: "BRL",
 	}).format(price);
 };
+
+export const isDev = process.env.NODE_ENV === "development";

@@ -1,0 +1,3 @@
+interface DefaultMessage {
+    message: string
+}

@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${montserrat.variable} ${poppins.variable} antialiased overflow-x-hidden`}>
+			<body className={`${montserrat.variable} ${poppins.variable} antialiased overflow-x-hidden select-none`}>
 				<Providers>{children}</Providers>
 				<div id="modal-root"/>
 			</body>
