@@ -10,7 +10,7 @@ import { isDev } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { isDevLocalClient } from "@/lib/mode";
 import CommonHeader from "@/components/common/CommonHeader";
-import { useLoginMutation } from "@/hooks/mutations/useLogin";
+import { useLoginMutation } from "@/hooks/queries/useLogin";
 
 const bypass = isDev && isDevLocalClient;
 
