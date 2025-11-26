@@ -3,33 +3,36 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import RowView from "@/components/layout/RowView";
-import Line from "@/components/common/Line";
-import AuthClient from "@/services/AuthClient";
 import { toast } from "react-toastify";
 import ms from "ms";
 import FormInput from "@/components/common/FormInput";
 import { isDev } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { isDevLocalClient } from "@/lib/mode";
+import CommonHeader from "@/components/common/CommonHeader";
+import { useLoginMutation } from "@/hooks/mutations/useLogin";
 
-const bypass = isDev && isDevLocalClient
+const bypass = isDev && isDevLocalClient;
 
-// Zod schema concordante com seu DTO LoginInput (Email e Senha)
 const loginSchema = z.object({
-	email: z.string().min(bypass ? 1 : 3, "Email muito curto").max(100).email("Email inválido"),
-	senha: z.string().min(bypass ? 1 : 5, "Senha muito curta").max(255),
+	email: z
+		.string()
+		.min(bypass ? 1 : 3, "Email muito curto")
+		.max(100)
+		.email("Email inválido"),
+	senha: z
+		.string()
+		.min(bypass ? 1 : 5, "Senha muito curta")
+		.max(255),
 });
 
 export type LoginSchema = z.infer<typeof loginSchema>;
 
-// Componente
 export default function LoginForm() {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { errors },
 	} = useForm<LoginSchema>({
 		resolver: zodResolver(loginSchema),
 		defaultValues: { email: "", senha: "" },
@@ -37,30 +40,21 @@ export default function LoginForm() {
 
 	const router = useRouter();
 
+	const loginMutation = useLoginMutation();
+
 	async function onSubmit(values: LoginSchema) {
 		if (bypass) {
-			router.push("/gestao/home");
+			router.push("/gestao");
 		}
 
-		const auth = new AuthClient();
-
-		try {
-			const res = await auth.login(values);
-
-			// Caso sucesso → LoginResponse
-			document.cookie = [
-				`token=${res.token}`,
-				"path=/",
-				`max-age=${ms("7d")}`, // 7 dias
-				window.location.protocol === "https:" ? "secure" : "",
-			].join("; ");
-
-			router.push("/gestao/home");
-		} catch (err: any) {
-			toast.error(err?.message || "Erro inesperado", {
-				autoClose: ms("4s"),
-			});
-		}
+		loginMutation.mutate({data: values}, {
+			onSuccess: () => {
+				router.push("/gestao");
+			},
+			onError: (err: any) => {
+				toast.error(err?.message || "Erro inesperado", { autoClose: ms("4s") });
+			},
+		});
 	}
 
 	return (
@@ -68,33 +62,8 @@ export default function LoginForm() {
 			<div className="w-full max-w-md">
 				{/* Card */}
 				<div className="grid grid-rows-[auto_auto_1fr] md:rounded-2xl shadow-xl overflow-hidden bg-item h-screen md:h-auto">
-					{/* Banner com imagem */}
-					<header className="w-full h-auto">
-						<div className="bg-banner w-full h-[17.5vh] border-b-4 md:border-b-6 border-b-secondary relative">
-							<div className="h-full aspect-auto">
-								<Image
-									src={"/Capivara.webp"}
-									alt="banner"
-									fill
-									priority
-									className="object-contain"
-								/>
-							</div>
-						</div>
-						<section className="w-full  px-6">
-							<RowView justify="start" align="center" className="h-full py-3">
-								<RowView align="center" className="gap-2">
-									<div className="relative h-20 md:h-26 border-2 border-white aspect-square rounded-full bg-primary -mt-10 md:-mt-16">
-										<Image src={"/Logo.webp"} alt="logo" fill priority className="object-contain" />
-									</div>
-									<h1 className="font-poppins font-semibold text-foreground/80 text-[1.4rem] md:text-3xl">
-										The Butters
-									</h1>
-								</RowView>
-							</RowView>
-						</section>
-					</header>
-					<Line />
+					{/* Header */}
+					<CommonHeader />
 					{/* Body */}
 					<div className="p-6">
 						<h2 className="text-2xl font-bold mb-1 text-foreground/90">Entrar</h2>
@@ -121,7 +90,7 @@ export default function LoginForm() {
 								error={errors.senha}
 								extra={
 									<a className="text-xs font-medium text-primary" href="#forgot">
-										Esqueceu?
+										Esqueci a senha
 									</a>
 								}
 							/>
@@ -130,10 +99,10 @@ export default function LoginForm() {
 							<div className="pt-2">
 								<button
 									type="submit"
-									disabled={isSubmitting}
+									disabled={loginMutation.isPending}
 									className="w-full rounded-xl py-3 font-semibold shadow-sm transition-all duration-300 cursor-pointer active:scale-[0.995] bg-secondary/75 hover:bg-secondary/90 disabled:bg-secondary/40"
 								>
-									{isSubmitting ? "Entrando..." : "Entrar"}
+									{loginMutation.isPending ? "Entrando..." : "Entrar"}
 								</button>
 							</div>
 						</form>

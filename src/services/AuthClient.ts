@@ -5,17 +5,25 @@ const axiosInstance = axios.create({
 });
 
 class AuthClient {
-	login = async (loginData: LoginInput) => {
+	login = async (loginData: LoginInput, secure = false) => {
 		try {
 			const res = await axiosInstance.post<LoginResponse, AxiosResponse<LoginResponse>, LoginInput>(
 				"/usuarios/login",
 				loginData
 			);
 
+			const data = res.data;
+
+			if (secure && data.user.tipo === "CL") {
+				throw { message: "Privilégios Insuficientes" } satisfies DefaultMessage;
+			}
+
 			return res.data;
 		} catch (err: any) {
-			console.log(err)
-			throw err.response?.data as DefaultMessage;
+			if (err?.response?.data) {
+				throw err.response.data as DefaultMessage;
+			}
+			throw err as DefaultMessage;
 		}
 	};
 	register = async (registerData: RegisterInput) => {
