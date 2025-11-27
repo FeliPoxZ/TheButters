@@ -1,5 +1,5 @@
 import { getToken } from "@/lib/utils";
-import { LojaCreateInput, LojaResponse } from "@/schemas/lojaSchema";
+import { LojaCreateInput, LojaResponse, LojaUpdateInput } from "@/schemas/lojaSchema";
 import axios, { AxiosResponse } from "axios";
 
 const axiosInstance = axios.create({
@@ -41,7 +41,6 @@ class LojaClient {
 		}
 	};
 
-
 	create = async (data: LojaCreateInput) => {
 		try {
 			const res = await axiosInstance.post<
@@ -55,6 +54,42 @@ class LojaClient {
 			});
 
 			return res.data;
+		} catch (err: any) {
+			if (err?.response?.data) {
+				throw err.response.data as DefaultMessage;
+			}
+			throw err as DefaultMessage;
+		}
+	};
+
+	update = async (data: LojaUpdateInput, uuid: string) => {
+		try {
+			const res = await axiosInstance.put<
+				LojaResponse,
+				AxiosResponse<LojaResponse>,
+				LojaUpdateInput
+			>(`/lojas/${uuid}`, data, {
+				headers: {
+					Authorization: `Bearer ${getToken()}`,
+				},
+			});
+
+			return res.data;
+		} catch (err: any) {
+			if (err?.response?.data) {
+				throw err.response.data as DefaultMessage;
+			}
+			throw err as DefaultMessage;
+		}
+	};
+
+	delete = async (uuid: string) => {
+		try {
+			await axiosInstance.delete(`/lojas/${uuid}`, {
+				headers: {
+					Authorization: `Bearer ${getToken()}`,
+				},
+			});
 		} catch (err: any) {
 			if (err?.response?.data) {
 				throw err.response.data as DefaultMessage;

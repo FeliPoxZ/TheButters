@@ -1,7 +1,8 @@
-import { LojaCreateInput, LojaResponse, LojaUpdateInput } from "@/schemas/lojaSchema";
+import { LojaCreateInput, LojaUpdateInput } from "@/schemas/lojaSchema";
 import LojaClient from "@/services/LojaClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import ms from "ms";
+import { toast } from "react-toastify";
 
 const lojaClient = new LojaClient();
 
@@ -9,7 +10,6 @@ export function useLojas() {
 	return useQuery({
 		queryKey: ["lojas"],
 		queryFn: async () => {
-			
 			const data = await lojaClient.getAll();
 			return data;
 		},
@@ -33,7 +33,7 @@ export function useCreateLoja() {
 	return useMutation({
 		mutationFn: async (input: LojaCreateInput) => {
 			const data = await lojaClient.create(input);
-			console.log(data)
+			console.log(data);
 			return data;
 		},
 		onSuccess: () => {
@@ -47,7 +47,7 @@ export function useUpdateLoja(id: string) {
 
 	return useMutation({
 		mutationFn: async (input: LojaUpdateInput) => {
-			const { data } = await axios.put(`/lojas/${id}`, input);
+			const data = await lojaClient.update(input, id);
 			return data;
 		},
 		onSuccess: () => {
@@ -62,10 +62,11 @@ export function useDeleteLoja(id: string) {
 
 	return useMutation({
 		mutationFn: async () => {
-			await axios.delete(`/lojas/${id}`);
+			await lojaClient.delete(id);
 		},
 		onSuccess: () => {
 			qc.invalidateQueries({ queryKey: ["lojas"] });
+			toast.info("Filial Removida", { autoClose: ms("4s") });
 		},
 	});
 }
