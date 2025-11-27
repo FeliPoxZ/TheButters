@@ -1,23 +1,27 @@
 import { LojaCreateInput, LojaResponse, LojaUpdateInput } from "@/schemas/lojaSchema";
+import LojaClient from "@/services/LojaClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+
+const lojaClient = new LojaClient();
 
 export function useLojas() {
 	return useQuery({
 		queryKey: ["lojas"],
 		queryFn: async () => {
-			const { data } = await axios.get<LojaResponse[]>("/lojas");
+			
+			const data = await lojaClient.getAll();
 			return data;
 		},
 	});
 }
 
-export function useLoja(id: string | undefined) {
+export function useLoja(id: string) {
 	return useQuery({
 		queryKey: ["loja", id],
 		enabled: !!id,
 		queryFn: async () => {
-			const { data } = await axios.get<LojaResponse>(`/lojas/${id}`);
+			const data = await lojaClient.get(id);
 			return data;
 		},
 	});
@@ -28,7 +32,8 @@ export function useCreateLoja() {
 
 	return useMutation({
 		mutationFn: async (input: LojaCreateInput) => {
-			const { data } = await axios.post("/lojas", input);
+			const data = await lojaClient.create(input);
+			console.log(data)
 			return data;
 		},
 		onSuccess: () => {

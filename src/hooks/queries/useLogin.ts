@@ -1,3 +1,4 @@
+import { LoginInput } from "@/schemas/userSchema";
 import AuthClient from "@/services/AuthClient";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ms from "ms";

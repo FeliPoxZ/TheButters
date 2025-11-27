@@ -3,7 +3,7 @@ import { z } from "zod";
 export const lojaCreateSchema = z.object({
 	cnpj: z.string().min(14, "CNPJ inválido").max(18),
 	nome: z.string().min(3, "Nome muito curto").max(100),
-	enderecoid: z.string().uuid("Endereço inválido"),
+	enderecoid: z.string().optional(),
 });
 export type LojaCreateInput = z.infer<typeof lojaCreateSchema>;
 

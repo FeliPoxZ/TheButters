@@ -47,14 +47,17 @@ export default function LoginForm() {
 			router.push("/gestao");
 		}
 
-		loginMutation.mutate({data: values}, {
-			onSuccess: () => {
-				router.push("/gestao");
-			},
-			onError: (err: any) => {
-				toast.error(err?.message || "Erro inesperado", { autoClose: ms("4s") });
-			},
-		});
+		loginMutation.mutate(
+			{ data: values, secure: true },
+			{
+				onSuccess: () => {
+					router.push("/gestao");
+				},
+				onError: (err: any) => {
+					toast.error(err?.message || "Erro inesperado", { autoClose: ms("4s") });
+				},
+			}
+		);
 	}
 
 	return (
@@ -100,7 +103,7 @@ export default function LoginForm() {
 								<button
 									type="submit"
 									disabled={loginMutation.isPending}
-									className="w-full rounded-xl py-3 font-semibold shadow-sm transition-all duration-300 cursor-pointer active:scale-[0.995] bg-secondary/75 hover:bg-secondary/90 disabled:bg-secondary/40"
+									className="w-full rounded-xl py-3 font-semibold shadow-sm transition-all duration-300 cursor-pointer active:scale-[0.995] bg-secondary/75 hover:bg-secondary/90 disabled:bg-secondary/40 disabled:cursor-pointer"
 								>
 									{loginMutation.isPending ? "Entrando..." : "Entrar"}
 								</button>

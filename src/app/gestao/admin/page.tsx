@@ -7,6 +7,7 @@ import ColumnView from "@/components/layout/ColumnView";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMe } from "@/hooks/queries/useMe";
 import CardLink from "@/components/ui/gestao/CardLink";
+import { isDevLocalClient } from "@/lib/mode";
 
 export default function AdminHub() {
 	const queryClient = useQueryClient();
@@ -80,7 +81,9 @@ export default function AdminHub() {
 					/>
 					{/* Conteúdo principal */}
 					<div className="px-8 py-10">
-						<h2 className="text-2xl md:text-3xl font-bold text-foreground/90 mb-3">Administração</h2>
+						<h2 className="text-2xl md:text-3xl font-bold text-foreground/90 mb-3">
+							Administração
+						</h2>
 						<p className="text-sm md:text-base mb-8 text-foreground/70">
 							Selecione abaixo uma das áreas da administração:
 						</p>
@@ -116,6 +119,7 @@ export default function AdminHub() {
 								title="Usuários"
 								description="Gerencie contas, acessos e permissões dos colaboradores."
 							/>
+
 							<CardLink
 								href="/gestao/admin/produtos"
 								svg={

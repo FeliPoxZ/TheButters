@@ -1,3 +1,4 @@
+import { LoginInput, LoginResponse, RegisterInput } from "@/schemas/userSchema";
 import axios, { AxiosResponse } from "axios";
 
 const axiosInstance = axios.create({
@@ -18,7 +19,7 @@ class AuthClient {
 				throw { message: "Privilégios Insuficientes" } satisfies DefaultMessage;
 			}
 
-			return res.data;
+			return data;
 		} catch (err: any) {
 			if (err?.response?.data) {
 				throw err.response.data as DefaultMessage;

@@ -4,7 +4,7 @@ import { useLojas } from "@/hooks/queries/useLojas";
 import Link from "next/link";
 
 export default function LojasPage() {
-	const { data, isLoading } = useLojas();
+	const { data, isLoading, error } = useLojas();
 
 	return (
 		<div className="px-8 py-10">
@@ -21,23 +21,27 @@ export default function LojasPage() {
 
 			{isLoading && <p>Carregando...</p>}
 
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				{data?.map((loja) => (
-					<Link
-						key={loja.id}
-						href={`/gestao/admin/filiais/${loja.id}`}
-						className="bg-item p-4 rounded-xl border border-banner/40 hover:opacity-80"
-					>
-						<h3 className="text-lg font-bold">{loja.nome}</h3>
+			{(data === null && error === null) ? (
+				<p>Nenhuma filial registrada</p>
+			) : (
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					{data?.map((loja) => (
+						<Link
+							key={loja.id}
+							href={`/gestao/admin/filiais/${loja.id}`}
+							className="bg-item p-4 rounded-xl border border-banner/40 hover:opacity-80"
+						>
+							<h3 className="text-lg font-bold">{loja.nome}</h3>
 
-						<p className="text-sm text-foreground/70">
-							{loja.endereco?.rua}, {loja.endereco?.numero} — {loja.endereco?.cidade}
-						</p>
+							<p className="text-sm text-foreground/70">
+								{loja.endereco?.rua}, {loja.endereco?.numero} — {loja.endereco?.cidade}
+							</p>
 
-						<p className="mt-2 text-xs">{loja.cnpj}</p>
-					</Link>
-				))}
-			</div>
+							<p className="mt-2 text-xs">{loja.cnpj}</p>
+						</Link>
+					))}
+				</div>
+			)}
 		</div>
 	);
 }

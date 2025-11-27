@@ -13,3 +13,10 @@ export const toPrice = (price: number) => {
 };
 
 export const isDev = process.env.NODE_ENV === "development";
+
+export function getToken() {
+	return document.cookie
+		.split("; ")
+		.find((row) => row.startsWith("token="))
+		?.split("=")[1];
+}
