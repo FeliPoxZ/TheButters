@@ -3,4 +3,5 @@ interface Product {
     nome: string
     descricao: string
     preco: number
+    imagemc?: string
 }

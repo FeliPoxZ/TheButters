@@ -1,14 +1,12 @@
-import { getToken } from "@/lib/utils";
-import { LojaCreateInput, LojaResponse, LojaUpdateInput } from "@/schemas/lojaSchema";
 import axios, { AxiosResponse } from "axios";
 
 const publicAPI = process.env.NEXT_PUBLIC_API_URL_PUBLIC;
 const privateAPI = process.env.NEXT_PUBLIC_API_URL;
 
-class LojaClient {
-	getAll = async () => {
+class ProdutoClient {
+	getAllByLoja = async (lojaId: string) => {
 		try {
-			const res = await axios.get<LojaResponse[] | null>(publicAPI + "/loja-produtos/lojas");
+			const res = await axios.get<ApiProduct[] | null>(publicAPI + `/loja-produtos/produtoVariado/${lojaId}`);
 
 			return res.data;
 		} catch (err: any) {
@@ -19,7 +17,7 @@ class LojaClient {
 		}
 	};
 
-	get = async (uuid: string) => {
+	/* get = async (uuid: string) => {
 		try {
 			const res = await axios.get<LojaResponse>(privateAPI + `/lojas/${uuid}`, {
 				headers: {
@@ -91,7 +89,7 @@ class LojaClient {
 			}
 			throw err as DefaultMessage;
 		}
-	};
+	}; */
 }
 
-export default LojaClient;
+export default ProdutoClient;

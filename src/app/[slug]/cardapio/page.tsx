@@ -9,6 +9,9 @@ import Header from "@/components/ui/cardapio/Header";
 import ProductModal from "@/components/ui/cardapio/ProductModal";
 import Bag from "@/components/ui/cardapio/Bag";
 import { mockData } from "@/tests/mockData";
+import { isDevLocalClient } from "@/lib/mode";
+import { useLojaStore } from "../stores/lojaStore";
+import { useProdutosPorLoja } from "@/hooks/queries/useProdutosPorLoja";
 
 export default function Cardapio() {
 	useEffect(() => {
@@ -20,14 +23,22 @@ export default function Cardapio() {
 		});
 	}, []);
 
+	const lojaId = useLojaStore((s) => s.lojaId);
+
+	const { data: categorias, isLoading } = useProdutosPorLoja(lojaId);
+
 	return (
 		<ColumnView className="min-h-screen w-dvw select-none">
 			<Header />
-			<CategoryNavBar categories={mockData} />
+			<CategoryNavBar categories={isDevLocalClient ? mockData : categorias ? categorias : mockData} />
 			<div className="mt-6 mb-10">
-				{mockData.map((category) => (
-					<CategorySection key={`${category.nome} section`} category={category} />
-				))}
+				{isDevLocalClient
+					? mockData.map((category) => (
+							<CategorySection key={`${category.nome} section`} category={category} />
+					  ))
+					: categorias?.map((category) => (
+							<CategorySection key={`${category.nome} section`} category={category} />
+					  ))}
 			</div>
 			<Bag />
 			<ProductModal />

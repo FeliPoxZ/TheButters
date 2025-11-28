@@ -20,3 +20,24 @@ export function getToken() {
 		.find((row) => row.startsWith("token="))
 		?.split("=")[1];
 }
+
+export function transformApiResponse(data: ApiProduct[] | null): Category[] | null {
+	if (!data) return null;
+
+	const map = new Map<string, Category>();
+
+	data.forEach(({ categoria, produto }) => {
+		if (!map.has(categoria.id)) {
+			map.set(categoria.id, {
+				id: categoria.id,
+				nome: categoria.nome,
+				descricao: categoria.descricao,
+				produtos: [],
+			});
+		}
+
+		map.get(categoria.id)!.produtos.push(produto);
+	});
+
+	return Array.from(map.values());
+}

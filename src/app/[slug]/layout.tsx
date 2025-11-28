@@ -1,5 +1,9 @@
 import { ReactNode } from "react";
 import { notFound } from "next/navigation";
+import LojaClient from "@/services/LojaClient";
+import { formatSlugFromLoja } from "@/lib/slug";
+import { InjectLojaId } from "./InjectLojaId";
+import QueryProvider from "@/components/common/QueryProvider";
 
 export default async function SlugLayout({
 	params,
@@ -10,21 +14,28 @@ export default async function SlugLayout({
 }) {
 	const { slug } = await params;
 
-	const isDev = process.env.NODE_ENV === "development";
-
-	// 👉 Em modo DEV, liberar o slug "dev" sem buscar no banco
-	if (isDev && slug === "dev") {
-		return <>{children}</>;
+	// Modo DEV → permitir /dev sem checar banco
+	if (process.env.NODE_ENV === "development" && slug === "dev") {
+		return <QueryProvider>{children}</QueryProvider>;
 	}
 
-	// 👉 Em qualquer ambiente, buscar loja real
-	const loja = null;
+	const lojaClient = new LojaClient();
+	const lojas = await lojaClient.getAll();
 
-	// Se não existir, 404
-	if (!loja) {
-		notFound();
-	}
+	if (!lojas) notFound();
 
-	// Se existir, renderiza normalmente
-	return <>{children}</>;
+	// Encontrar a loja cujo slug gerado bate com o slug da URL
+	const loja = lojas.find((loja) => {
+		const verifySlug = formatSlugFromLoja(loja);
+		return verifySlug === slug;
+	});
+
+	if (!loja) notFound();
+
+	return (
+		<QueryProvider>
+			<InjectLojaId lojaId={loja.id} />
+			{children}
+		</QueryProvider>
+	);
 }
