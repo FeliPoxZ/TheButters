@@ -2,9 +2,26 @@ import Line from "@/components/common/Line";
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
 import Wrapper from "@/components/layout/Wrapper";
+import ms from "ms";
 import Image from "next/image";
+import Link from "next/link";
+import { toast } from "react-toastify";
 
 function Header() {
+	const handleShare = async () => {
+		try {
+			await navigator.clipboard.writeText(window.location.href);
+			toast.info("Link copiado para área de transferência!", {
+				autoClose: ms("2s"),
+			});
+		} catch (err) {
+			toast.error("Falha ao copiar o link.");
+		}
+	};
+
+	const now = new Date();
+	const hour = now.getHours();
+
 	return (
 		<header className="w-full h-auto">
 			<div className="bg-banner w-full h-[17.5vh] border-b-4 md:border-b-6 border-b-secondary relative">
@@ -40,14 +57,17 @@ function Header() {
 									/>
 								</svg>
 							</button>
-							<button className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 aspect-square h-10 transition-all duration-200 hover:scale-110 shadow-sm">
+							<button
+								onClick={handleShare}
+								className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 aspect-square h-10 transition-all duration-200 hover:scale-110 shadow-sm"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
 									strokeWidth={1.5}
 									stroke="currentColor"
-									className="size-6 text-inherit"
+									className="size-6 text-inherit -ml-px"
 								>
 									<path
 										strokeLinecap="round"
@@ -64,13 +84,23 @@ function Header() {
 					<ColumnView className="pt-3 mb-4 gap-2">
 						<RowView justify="between" align="center" className="w-full">
 							<p className="font-medium text-foreground/85">Aberto das 9h às 22h</p>
-							<button className="font-medium text-extra-orange/90 cursor-pointer py-1 transition-all duration-200 hover:scale-105">
+							<Link
+								target="_blank"
+								href={"https://www.instagram.com/thebuttersrp/"}
+								className="font-medium text-extra-orange/90 cursor-pointer py-1 transition-all duration-200 hover:scale-105"
+							>
 								Perfil da loja
-							</button>
+							</Link>
 						</RowView>
-						<div className="bg-soft-green w-full py-1 md:py-2 rounded-sm">
-							<p className="text-on-soft-green font-semibold text-center">Loja Aberta</p>
-						</div>
+						{hour >= 9 && hour < 22 ? (
+							<div className={"bg-soft-green w-full py-1 md:py-2 rounded-sm"}>
+								<p className="text-on-soft-green font-semibold text-center">Loja Aberta • Faça Seu Pedido!</p>
+							</div>
+						) : (
+							<div className={"bg-soft-red w-full py-1 md:py-2 rounded-sm"}>
+								<p className="text-on-soft-red/90 font-semibold text-center">Loja Fechada • Abre Novamente Amanhã às 9:00</p>
+							</div>
+						)}
 					</ColumnView>
 				</Wrapper>
 			</section>
