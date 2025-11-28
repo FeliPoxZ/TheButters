@@ -7,7 +7,6 @@ import ColumnView from "@/components/layout/ColumnView";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMe } from "@/hooks/queries/useMe";
 import CardLink from "@/components/ui/gestao/CardLink";
-import { isDevLocalClient } from "@/lib/mode";
 
 export default function AdminHub() {
 	const queryClient = useQueryClient();

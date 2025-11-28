@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { isDevLocalClient } from "@/lib/mode";
 import CommonHeader from "@/components/common/CommonHeader";
 import { useLoginMutation } from "@/hooks/queries/useLogin";
+import CommonFooter from "@/components/common/CommonFooter";
 
 const bypass = isDev && isDevLocalClient;
 
@@ -103,7 +104,7 @@ export default function LoginForm() {
 								<button
 									type="submit"
 									disabled={loginMutation.isPending}
-									className="w-full rounded-xl py-3 font-semibold shadow-sm transition-all duration-300 cursor-pointer active:scale-[0.995] bg-secondary/75 hover:bg-secondary/90 disabled:bg-secondary/40 disabled:cursor-pointer"
+									className="w-full rounded-xl py-3 font-semibold shadow-sm transition-all duration-300 cursor-pointer active:scale-[0.995] bg-secondary/75 hover:bg-secondary/90 disabled:bg-secondary/40 disabled:cursor-default"
 								>
 									{loginMutation.isPending ? "Entrando..." : "Entrar"}
 								</button>
@@ -112,9 +113,7 @@ export default function LoginForm() {
 					</div>
 
 					{/* Footer pequeno */}
-					<div className="px-6 py-3 text-xs text-center bg-banner text-foreground">
-						Atendimento das 9h às 22h • Loja Aberta
-					</div>
+					<CommonFooter />
 				</div>
 			</div>
 		</div>

@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useMe } from "@/hooks/queries/useMe";
 import CardLink from "@/components/ui/gestao/CardLink";
 import { isDevLocalClient } from "@/lib/mode";
+import CommonFooter from "@/components/common/CommonFooter";
 
 export default function GestaoHub() {
 	const queryClient = useQueryClient();
@@ -174,9 +175,7 @@ export default function GestaoHub() {
 					</div>
 
 					{/* Rodapé */}
-					<div className="px-6 py-3 text-xs text-center bg-banner text-foreground">
-						Atendimento das 9h às 22h • Loja Aberta
-					</div>
+					<CommonFooter />
 				</div>
 			</div>
 		</div>
