@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "keen-slider/keen-slider.min.css";
 @import "aos/dist/aos.css";
+@import "react-loading-skeleton/dist/skeleton.css";
 
 html {
 	scroll-behavior: smooth;
@@ -52,6 +53,10 @@ html {
 	--soft-red: #dd5151;
 	--on-soft-red: #f71414;
 	--extra-orange: #c36d20;
+
+	/* Skeletons */
+	--dark-background: #ecdfc3;
+	--dark-primary: #0d4d96;
 }
 
 @theme inline {
@@ -105,6 +110,10 @@ html {
 	--color-extra-orange: var(--extra-orange);
 	--font-montserrat: var(--font-montserrat);
 	--font-poppins: var(--font-poppins);
+
+	/* Skeletons */
+	--color-dark-primary: var(--dark-primary);
+	--color-dark-background: var(--dark-background);
 }
 
 body {

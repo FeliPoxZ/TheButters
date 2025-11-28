@@ -8,7 +8,7 @@ import { useSectionObserver } from "@/hooks/useSectionObserver";
 import ms from "ms";
 
 interface Props {
-	categories: Category[];
+	categories: Category[] | null | undefined;
 }
 
 export default function CategoryNavBar({ categories }: Props) {
@@ -21,11 +21,13 @@ export default function CategoryNavBar({ categories }: Props) {
 		renderMode: "performance",
 	});
 
-	const [selectedCategory, setSelectedCategory] = useState<string>(categories[0].nome);
+	const [selectedCategory, setSelectedCategory] = useState<string>(
+		categories ? categories[0].nome : ""
+	);
 	const [observerPaused, setObserverPaused] = useState(false);
 	const waitingScrollRef = useRef(false);
 
-	const categoryIds = categories.map((c) => c.nome);
+	const categoryIds = categories ? categories.map((c) => c.nome) : [""];
 
 	useSectionObserver(categoryIds, setSelectedCategory, observerPaused);
 
@@ -60,11 +62,13 @@ export default function CategoryNavBar({ categories }: Props) {
 	useEffect(() => {
 		if (!slider.current) return;
 
-		const index = categories.findIndex((c) => c.nome === selectedCategory);
+		const index = categories ? categories.findIndex((c) => c.nome === selectedCategory) : 0;
 		if (index !== -1) {
 			slider.current.moveToIdx(index, true);
 		}
 	}, [selectedCategory, categories, slider]);
+
+	if (!categories) return <div className="bg-primary sticky -top-px shadow-lg w-full z-10" />;
 
 	return (
 		<nav className="bg-primary sticky -top-px pl-5 md:pl-11 shadow-lg w-full z-10">
@@ -81,7 +85,7 @@ export default function CategoryNavBar({ categories }: Props) {
 							href={""}
 							onClick={(e) => {
 								e.preventDefault();
-								document.getElementById(nome)?.scrollIntoView({behavior: "smooth"})
+								document.getElementById(nome)?.scrollIntoView({ behavior: "smooth" });
 								handleCategoryClick(nome, i);
 							}}
 							className={cn(
