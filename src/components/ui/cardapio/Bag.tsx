@@ -85,7 +85,7 @@ function Bag() {
 								<p className="text-on-soft-green/90 font-semibold">{toPrice(total)}</p>
 							</ColumnView>
 							<RowView className="gap-2">
-								<button className="size-10 bg-on-soft-red/60 rounded-sm" onClick={clearBag}>
+								<button className="size-10 bg-extra-red/60 rounded-sm" onClick={clearBag}>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										fill="none"
@@ -102,7 +102,7 @@ function Bag() {
 									</svg>
 								</button>
 								<button className="px-3 w-fit h-10 bg-soft-green rounded-sm font-poppins flex justify-between items-center gap-1">
-									<p>FINALIZAR</p>
+									<p >REVIZAR</p>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										fill="none"

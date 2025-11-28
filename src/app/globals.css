@@ -50,8 +50,9 @@ html {
 	--item: #fdf7ed;
 	--soft-green: #7ccd7f;
 	--on-soft-green: #18691b;
-	--soft-red: #eb6666;
+	--soft-red: #eb6060;
 	--on-soft-red: #5f0707;
+	--extra-red: #f71414;
 	--extra-orange: #c36d20;
 
 	/* Skeletons */
@@ -107,6 +108,7 @@ html {
 	--color-on-soft-green: var(--on-soft-green);
 	--color-soft-red: var(--soft-red);
 	--color-on-soft-red: var(--on-soft-red);
+	--color-extra-red: var(--extra-red);
 	--color-extra-orange: var(--extra-orange);
 	--font-montserrat: var(--font-montserrat);
 	--font-poppins: var(--font-poppins);

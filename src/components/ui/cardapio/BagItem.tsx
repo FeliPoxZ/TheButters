@@ -22,7 +22,7 @@ function BagItem({ item, itemIndex }: Props) {
 				<p className="font-semibold text-foreground/90">{item.nome}</p>
 				<RowView align="center" className="gap-2">
 					<button
-						className="p-1 bg-on-soft-red/50 rounded-sm"
+						className="p-1 bg-extra-red/50 rounded-sm"
 						onClick={() => remove(itemIndex)}
 					>
 						<svg
