@@ -4,10 +4,14 @@ import { cn, toPrice } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import BagItem from "./BagItem";
 import useBagStore from "@/app/[slug]/stores/useBagStore";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { Modal } from "@/components/common/Modal";
 
 function Bag() {
 	const [isBagOpen, setBagOpen] = useState(false);
 	const [total, setTotal] = useState(0);
+	const [qtd, setQtd] = useState(0);
 	const [notify, setNotify] = useState(false);
 
 	const items = useBagStore((s) => s.items);
@@ -23,6 +27,8 @@ function Bag() {
 		const prevCount = prevCountRef.current;
 		const currentCount = getBagQuantity();
 
+		setQtd(currentCount);
+
 		// Se adicionou item (aumentou)
 		if (currentCount > prevCount) {
 			// ativa notificação somente se a bag estiver fechada
@@ -37,6 +43,8 @@ function Bag() {
 		// atualiza o contador anterior
 		prevCountRef.current = currentCount;
 	}, [items, isBagOpen, getTotal]);
+
+	const { slug } = useParams();
 
 	return (
 		<aside
@@ -101,23 +109,48 @@ function Bag() {
 										/>
 									</svg>
 								</button>
-								<button className="px-3 w-fit h-10 bg-soft-green rounded-sm font-poppins flex justify-between items-center gap-1">
-									<p >REVIZAR</p>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										strokeWidth={1.5}
-										stroke="currentColor"
-										className="size-4"
+								{qtd > 0 ? (
+									<Link
+										href={`/${slug}/pedido/revisar-pedido`}
+										className="px-3 w-fit h-10 bg-soft-green rounded-sm font-poppins flex justify-between items-center gap-1"
 									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-										/>
-									</svg>
-								</button>
+										<p>REVISAR</p>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											strokeWidth={1.5}
+											stroke="currentColor"
+											className="size-4"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+											/>
+										</svg>
+									</Link>
+								) : (
+									<div
+										className="px-3 w-fit h-10 bg-soft-green/60 rounded-sm font-poppins flex justify-between items-center gap-1"
+									>
+										<p>REVIZAR</p>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											strokeWidth={1.5}
+											stroke="currentColor"
+											className="size-4"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+											/>
+										</svg>
+									</div>
+								)}
 							</RowView>
 						</RowView>
 					</div>
