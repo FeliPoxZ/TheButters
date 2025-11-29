@@ -1,10 +1,11 @@
+import { useAuthStore } from "@/app/gestao/stores/authStore";
 import { LoginInput } from "@/schemas/userSchema";
 import AuthClient from "@/services/AuthClient";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import ms from "ms";
 
 export function useLoginMutation() {
-	const queryClient = useQueryClient();
+	const setUser = useAuthStore(s => s.setUser)
 
 	return useMutation({
 		mutationFn: async (params: { data: LoginInput; secure?: boolean }) => {
@@ -21,8 +22,8 @@ export function useLoginMutation() {
 				window.location.protocol === "https:" ? "secure" : "",
 			].join("; ");
 
-			// --- 2. Salva o usuário autenticado no cache ---
-			queryClient.setQueryData(["me"], res.user);
+			// --- 2. Salva o usuário autenticado ---
+			setUser(res.user);
 		},
 	});
 }

@@ -6,6 +6,8 @@ import { isDevDB } from "./lib/mode";
 export function proxy(req: NextRequest) {
 	const { pathname } = req.nextUrl;
 
+	const isProtectedRoute = pathname.startsWith("/gestao") && !pathname.startsWith("/gestao/auth");
+
 	// Permitir assets internos
 	if (
 		pathname.startsWith("/_next") ||
@@ -30,11 +32,11 @@ export function proxy(req: NextRequest) {
 		}
 
 		// Simulação em dev do /gestao/*
-		if (isDevDB && pathname.startsWith("/gestao")) {
+		if (isDevDB && isProtectedRoute) {
 			const token = req.cookies.get("token")?.value;
 
 			// Se não tem token → login
-			if (!token && !pathname.startsWith("/gestao/auth")) {
+			if (!token) {
 				return NextResponse.redirect(new URL("/gestao/auth", req.url));
 			}
 		}
@@ -53,7 +55,7 @@ export function proxy(req: NextRequest) {
 	}
 
 	// 🔒 PROTEGE /gestao/*
-	if (pathname.startsWith("/gestao")) {
+	if (isProtectedRoute) {
 		const token = req.cookies.get("token")?.value;
 
 		// Se não tiver token → redireciona para login
