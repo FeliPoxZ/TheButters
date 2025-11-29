@@ -155,7 +155,7 @@ body {
 	width: 18px;
 	aspect-ratio: 1/1;
 	border-radius: 9999px;
-	background-color: var(--on-soft-red);
+	background-color: var(--extra-red);
 	left: -2px;
 	top: -2px;
 	filter: drop-shadow(0 0 2px #00000050);

@@ -10,16 +10,23 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BanknotesIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline'
+import Line from "@/components/common/Line";
 
 export default function RevisarPedido() {
 	const items = useBagStore((s) => s.items);
 	const getTotal = useBagStore((s) => s.useBagTotal);
+	const getBagQtd = useBagStore((s) => s.useBagQuantity)
 
 	const [total, setTotal] = useState(0);
+	const [bagQtd, setBagQtd] = useState(0);
 
 	useEffect(() => {
 		setTotal(getTotal());
 	}, [getTotal]);
+
+	useEffect(() => {
+		setBagQtd(getBagQtd());
+	}, [getBagQtd]);
 
 	const { slug } = useParams();
 
@@ -58,11 +65,15 @@ export default function RevisarPedido() {
 					</div>
 					<hr className="h-full w-[3px] mx-4 bg-[#BEBEBE] border-0" />
 					<ColumnView justify="end" className="w-1/3 h-full gap-2">
-						<RowView justify="between" align="baseline" className="gap-2 w-full">
+						<RowView justify="between" align="baseline" className="gap-2 w-full px-1">
+							<p className="text-foreground/90">Quantidade de items</p>
+							<p className="text-foreground/90">{bagQtd}</p>
+						</RowView>
+						<RowView justify="between" align="baseline" className="gap-2 w-full px-1">
 							<p className="text-xl text-foreground/90 font-semibold">Total a Pagar</p>
-							{/* <hr className="flex-1 border-b border-dotted mx-2" /> */}
 							<p className="text-xl text-on-soft-green/90 font-semibold">{toPrice(total)}</p>
 						</RowView>
+						<Line/>
 						<RowView className="gap-2 w-full">
 							<Link href={`/${slug}/cardapio`} className="h-10 w-full bg-primary/60 rounded-sm font-poppins flex justify-center items-center gap-2 text-foreground/90">
 								<p className="font-medium">Voltar</p>
