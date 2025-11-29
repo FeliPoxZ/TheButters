@@ -57,11 +57,12 @@ export default function RevisarPedido() {
 						))}
 					</div>
 					<hr className="h-full w-[3px] mx-4 bg-[#BEBEBE] border-0" />
-					<ColumnView className="w-1/3 h-full">
-						<ColumnView>
-							<p className="text-foreground/90 font-semibold">Total a Pagar</p>
-							<p className="text-on-soft-green/90 font-semibold">{toPrice(total)}</p>
-						</ColumnView>
+					<ColumnView justify="end" className="w-1/3 h-full gap-2">
+						<RowView justify="between" align="baseline" className="gap-2 w-full">
+							<p className="text-xl text-foreground/90 font-semibold">Total a Pagar</p>
+							{/* <hr className="flex-1 border-b border-dotted mx-2" /> */}
+							<p className="text-xl text-on-soft-green/90 font-semibold">{toPrice(total)}</p>
+						</RowView>
 						<RowView className="gap-2 w-full">
 							<Link href={`/${slug}/cardapio`} className="h-10 w-full bg-primary/60 rounded-sm font-poppins flex justify-center items-center gap-2 text-foreground/90">
 								<p className="font-medium">Voltar</p>
