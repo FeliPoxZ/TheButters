@@ -26,112 +26,29 @@ export default function RevisarPedido() {
 			<div className="relative bg-item h-full overflow-hidden rounded-2xl shadow-md py-4 px-6">
 				<RowView className="h-full w-full">
 					<div className="h-full w-full overflow-y-auto px-6">
-						<ColumnView className="w-full">
-							<RowView align="center" justify="between" className="w-full py-2">
-								<p className="font-semibold text-foreground/90">{"Cookie"}</p>
-							</RowView>
-							<RowView align="baseline" className="text-sm w-full">
-								<RowView className="gap-2">
-									<p>{2}x</p>
-									<p>{toPrice(10)}</p>
+						{items.map(({item, qtd}) => (
+							<ColumnView className="w-full" key={"item" + item.id}>
+								<RowView align="center" justify="between" className="w-full py-2">
+									<p className="font-semibold text-foreground/90">{"Cookie"}</p>
 								</RowView>
-								<hr className="flex-1 border-b border-dotted mx-2" />
-								<p className="font-semibold text-on-soft-green/80">{toPrice(2 * 10)}</p>
-							</RowView>
-							<hr className="bg-[#BEBEBE] h-px w-full border-0 my-3" />
-						</ColumnView>
-						<ColumnView className="w-full">
-							<RowView align="center" justify="between" className="w-full py-2">
-								<p className="font-semibold text-foreground/90">{"Cookie"}</p>
-							</RowView>
-							<RowView align="baseline" className="text-sm w-full">
-								<RowView className="gap-2">
-									<p>{2}x</p>
-									<p>{toPrice(10)}</p>
+								<RowView align="baseline" className="text-sm w-full">
+									<RowView className="gap-2">
+										<p>{qtd}x</p>
+										<p>{toPrice(item.preco)}</p>
+									</RowView>
+									<hr className="flex-1 border-b border-dotted mx-2" />
+									<p className="font-semibold text-on-soft-green/80">{toPrice(qtd * item.preco)}</p>
 								</RowView>
-								<hr className="flex-1 border-b border-dotted mx-2" />
-								<p className="font-semibold text-on-soft-green/80">{toPrice(2 * 10)}</p>
-							</RowView>
-							<hr className="bg-[#BEBEBE] h-px w-full border-0 my-3" />
-						</ColumnView>
-						<ColumnView className="w-full">
-							<RowView align="center" justify="between" className="w-full py-2">
-								<p className="font-semibold text-foreground/90">{"Cookie"}</p>
-							</RowView>
-							<RowView align="baseline" className="text-sm w-full">
-								<RowView className="gap-2">
-									<p>{2}x</p>
-									<p>{toPrice(10)}</p>
-								</RowView>
-								<hr className="flex-1 border-b border-dotted mx-2" />
-								<p className="font-semibold text-on-soft-green/80">{toPrice(2 * 10)}</p>
-							</RowView>
-							<hr className="bg-[#BEBEBE] h-px w-full border-0 my-3" />
-						</ColumnView>
-						<ColumnView className="w-full">
-							<RowView align="center" justify="between" className="w-full py-2">
-								<p className="font-semibold text-foreground/90">{"Cookie"}</p>
-							</RowView>
-							<RowView align="baseline" className="text-sm w-full">
-								<RowView className="gap-2">
-									<p>{2}x</p>
-									<p>{toPrice(10)}</p>
-								</RowView>
-								<hr className="flex-1 border-b border-dotted mx-2" />
-								<p className="font-semibold text-on-soft-green/80">{toPrice(2 * 10)}</p>
-							</RowView>
-							<hr className="bg-[#BEBEBE] h-px w-full border-0 my-3" />
-						</ColumnView>
-						<ColumnView className="w-full">
-							<RowView align="center" justify="between" className="w-full py-2">
-								<p className="font-semibold text-foreground/90">{"Cookie"}</p>
-							</RowView>
-							<RowView align="baseline" className="text-sm w-full">
-								<RowView className="gap-2">
-									<p>{2}x</p>
-									<p>{toPrice(10)}</p>
-								</RowView>
-								<hr className="flex-1 border-b border-dotted mx-2" />
-								<p className="font-semibold text-on-soft-green/80">{toPrice(2 * 10)}</p>
-							</RowView>
-							<hr className="bg-[#BEBEBE] h-px w-full border-0 my-3" />
-						</ColumnView>
-						<ColumnView className="w-full">
-							<RowView align="center" justify="between" className="w-full py-2">
-								<p className="font-semibold text-foreground/90">{"Cookie"}</p>
-							</RowView>
-							<RowView align="baseline" className="text-sm w-full">
-								<RowView className="gap-2">
-									<p>{2}x</p>
-									<p>{toPrice(10)}</p>
-								</RowView>
-								<hr className="flex-1 border-b border-dotted mx-2" />
-								<p className="font-semibold text-on-soft-green/80">{toPrice(2 * 10)}</p>
-							</RowView>
-							<hr className="bg-[#BEBEBE] h-px w-full border-0 my-3" />
-						</ColumnView>
-						<ColumnView className="w-full">
-							<RowView align="center" justify="between" className="w-full py-2">
-								<p className="font-semibold text-foreground/90">{"Cookie"}</p>
-							</RowView>
-							<RowView align="baseline" className="text-sm w-full">
-								<RowView className="gap-2">
-									<p>{2}x</p>
-									<p>{toPrice(10)}</p>
-								</RowView>
-								<hr className="flex-1 border-b border-dotted mx-2" />
-								<p className="font-semibold text-on-soft-green/80">{toPrice(2 * 10)}</p>
-							</RowView>
-							<hr className="bg-[#BEBEBE] h-px w-full border-0 my-3" />
-						</ColumnView>
+								<hr className="bg-[#BEBEBE] h-px w-full border-0 my-3" />
+							</ColumnView>
+						))}
 					</div>
-                    <hr className="h-full w-[3px] mx-4 bg-[#BEBEBE] border-0"/>
-                    <div className="w-1/4 h-full"></div>
+					<hr className="h-full w-[3px] mx-4 bg-[#BEBEBE] border-0" />
+					<div className="w-1/4 h-full">
+						
+					</div>
 				</RowView>
 			</div>
-			{/*             <div className="h-20 w-full bg-item rounded-2xl shadow-md mt-6">
-
-            </div> */}
 			<CommonFooter roundedTop />
 		</div>
 	);
