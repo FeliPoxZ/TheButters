@@ -6,9 +6,22 @@ import CommonFooter from "@/components/common/CommonFooter";
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
 import { toPrice } from "@/lib/utils";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { BanknotesIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline'
 
 export default function RevisarPedido() {
 	const items = useBagStore((s) => s.items);
+	const getTotal = useBagStore((s) => s.useBagTotal);
+
+	const [total, setTotal] = useState(0);
+
+	useEffect(() => {
+		setTotal(getTotal());
+	}, [getTotal]);
+
+	const { slug } = useParams();
 
 	return (
 		<div className="grid grid-rows-[auto_1fr_auto] max-w-7xl h-screen mx-auto px-4 py-6">
@@ -26,7 +39,7 @@ export default function RevisarPedido() {
 			<div className="relative bg-item h-full overflow-hidden rounded-2xl shadow-md py-4 px-6">
 				<RowView className="h-full w-full">
 					<div className="h-full w-full overflow-y-auto px-6">
-						{items.map(({item, qtd}) => (
+						{items.map(({ item, qtd }) => (
 							<ColumnView className="w-full" key={"item" + item.id}>
 								<RowView align="center" justify="between" className="w-full py-2">
 									<p className="font-semibold text-foreground/90">{"Cookie"}</p>
@@ -44,9 +57,25 @@ export default function RevisarPedido() {
 						))}
 					</div>
 					<hr className="h-full w-[3px] mx-4 bg-[#BEBEBE] border-0" />
-					<div className="w-1/4 h-full">
-						
-					</div>
+					<ColumnView className="w-1/3 h-full">
+						<ColumnView>
+							<p className="text-foreground/90 font-semibold">Total a Pagar</p>
+							<p className="text-on-soft-green/90 font-semibold">{toPrice(total)}</p>
+						</ColumnView>
+						<RowView className="gap-2 w-full">
+							<Link href={`/${slug}/cardapio`} className="h-10 w-full bg-primary/60 rounded-sm font-poppins flex justify-center items-center gap-2 text-foreground/90">
+								<p className="font-medium">Voltar</p>
+								<ArrowUturnLeftIcon className="size-5 text-inherit"/>
+							</Link>
+							<Link
+								href={`/${slug}/pedido/finalizar-pedido`}
+								className="px-3 h-10 w-full bg-soft-green rounded-sm font-poppins flex justify-center items-center gap-2 text-foreground/90"
+							>
+								<p className="font-medium">Pagamento</p>
+								<BanknotesIcon className="size-6 text-inherit"/>
+							</Link>
+						</RowView>
+					</ColumnView>
 				</RowView>
 			</div>
 			<CommonFooter roundedTop />

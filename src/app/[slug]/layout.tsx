@@ -1,41 +1,44 @@
-import { ReactNode } from "react";
+import { use } from "react";
 import { notFound } from "next/navigation";
 import LojaClient from "@/services/LojaClient";
 import { formatSlugFromLoja } from "@/lib/slug";
 import { InjectLojaId } from "./InjectLojaId";
 import QueryProvider from "@/components/common/QueryProvider";
 
-export default async function SlugLayout({
-	params,
-	children,
-}: {
-	params: { slug: string };
-	children: ReactNode;
-}) {
-	const { slug } = await params;
+type SlugLayoutProps = {
+	params: Promise<{ slug: string }>; 
+	children: React.ReactNode;
+};
+
+export default function SlugLayout({ params, children }: SlugLayoutProps) {
+	const { slug } = use(params);
 
 	// Modo DEV → permitir /dev sem checar banco
 	if (process.env.NODE_ENV === "development" && slug === "dev") {
 		return <QueryProvider>{children}</QueryProvider>;
 	}
 
+	return (
+		<QueryProvider>
+			<SlugResolver slug={slug}>{children}</SlugResolver>
+		</QueryProvider>
+	);
+}
+
+async function SlugResolver({ slug, children }: { slug: string; children: React.ReactNode }) {
 	const lojaClient = new LojaClient();
 	const lojas = await lojaClient.getAll();
 
 	if (!lojas) notFound();
 
-	// Encontrar a loja cujo slug gerado bate com o slug da URL
-	const loja = lojas.find((loja) => {
-		const verifySlug = formatSlugFromLoja(loja);
-		return verifySlug === slug;
-	});
+	const loja = lojas.find((loja) => formatSlugFromLoja(loja) === slug);
 
 	if (!loja) notFound();
 
 	return (
-		<QueryProvider>
+		<>
 			<InjectLojaId lojaId={loja.id} />
 			{children}
-		</QueryProvider>
+		</>
 	);
 }

@@ -6,7 +6,6 @@ import BagItem from "./BagItem";
 import useBagStore from "@/app/[slug]/stores/useBagStore";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Modal } from "@/components/common/Modal";
 
 function Bag() {
 	const [isBagOpen, setBagOpen] = useState(false);
