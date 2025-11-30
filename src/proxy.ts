@@ -76,6 +76,12 @@ export function proxy(req: NextRequest) {
 	// 🚀 AMBIENTE DE PRODUÇÃO
 	//
 
+	if (pathname === "/" || pathname === "/loja") {
+		return NextResponse.redirect(
+			new URL("/loja/avenida-costabile-romano-2252-ribeirao-preto/cardapio", req.url)
+		);
+	}
+
 	// Bloqueia /dev/* em produção
 	if (pathname.startsWith("/dev")) {
 		return new NextResponse("Rota indisponível em produção", { status: 404 });

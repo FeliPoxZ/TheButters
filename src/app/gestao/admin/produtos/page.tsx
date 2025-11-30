@@ -4,8 +4,11 @@ import { useState, useMemo } from "react";
 import { Plus, Package, Tag, Filter } from "lucide-react";
 import CommonHeader from "@/components/common/CommonHeader";
 import ProdutoCard from "@/components/ui/gestao/admin/produtos/ProdutoCard";
-/* import ProdutoModal from "@/components/produtos/ProdutoModal";
-import CategoriaModal from "@/components/produtos/CategoriaModal"; */
+import ProdutoModal from "@/components/ui/gestao/admin/produtos/ProdutoModal";
+import CategoriaModal from "@/components/ui/gestao/admin/produtos/CategoriaModal";
+import CommonFooter from "@/components/common/CommonFooter";
+import ExtraHeader from "@/components/ui/gestao/ExtraHeader";
+
 import {
 	Select,
 	SelectContent,
@@ -13,102 +16,67 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import CommonFooter from "@/components/common/CommonFooter";
-import ExtraHeader from "@/components/ui/gestao/ExtraHeader";
 
-const MOCK_CATEGORIAS = [
-	{ id: "1", nome: "Bebidas", descricao: "Refrigerantes, sucos e águas" },
-	{ id: "2", nome: "Snacks", descricao: "Salgadinhos e petiscos" },
-	{ id: "3", nome: "Doces", descricao: "Chocolates e balas" },
-	{ id: "4", nome: "Higiene", descricao: "Produtos de limpeza e higiene pessoal" },
-];
-
-const MOCK_LOJAS = [
-	{ id: "1", nome: "Loja Centro" },
-	{ id: "2", nome: "Loja Shopping" },
-	{ id: "3", nome: "Loja Zona Sul" },
-	{ id: "4", nome: "Loja Norte" },
-];
-
-const MOCK_PRODUTOS = [
-	{
-		id: "1",
-		nome: "Coca-Cola 2L",
-		descricao: "Refrigerante Coca-Cola garrafa 2 litros",
-		preco: 8.99,
-		categoriaId: "1",
-		lojaIds: ["1", "2", "3"],
-	},
-	{
-		id: "2",
-		nome: "Doritos Queijo",
-		descricao: "Salgadinho Doritos sabor queijo 150g",
-		preco: 6.5,
-		categoriaId: "2",
-		lojaIds: ["1", "2"],
-	},
-	{
-		id: "3",
-		nome: "Chocolate Lacta",
-		descricao: "Chocolate ao leite Lacta 90g",
-		preco: 4.99,
-		categoriaId: "3",
-		lojaIds: ["2", "3", "4"],
-	},
-	{
-		id: "4",
-		nome: "Sabonete Dove",
-		descricao: "Sabonete em barra Dove 90g",
-		preco: 3.5,
-		categoriaId: "4",
-		lojaIds: ["1", "3", "4"],
-	},
-	{
-		id: "5",
-		nome: "Pepsi 2L",
-		descricao: "Refrigerante Pepsi garrafa 2 litros",
-		preco: 7.99,
-		categoriaId: "1",
-		lojaIds: ["1", "2", "3", "4"],
-	},
-	{
-		id: "6",
-		nome: "Ruffles Original",
-		descricao: "Batata frita Ruffles original 100g",
-		preco: 5.99,
-		categoriaId: "2",
-		lojaIds: ["2", "4"],
-	},
-];
+import { useProdutosByLoja, useCreateProduto } from "@/hooks/queries/useProdutos";
+import { useCategorias, useCreateCategoria } from "@/hooks/queries/useCategorias";
+import { useLojas } from "@/hooks/queries/useLojas"; // novo hook
+import { ProdutoSchema } from "@/schemas/produtoSchema";
+import { CategoriaSchema } from "@/schemas/categoriaSchema";
 
 export default function ProdutosPage() {
 	const [produtoModalOpen, setProdutoModalOpen] = useState(false);
 	const [categoriaModalOpen, setCategoriaModalOpen] = useState(false);
-	const [editingProduto, setEditingProduto] = useState<any>(null);
-	const [editingCategoria, setEditingCategoria] = useState<any>(null);
+	const [editingProduto, setEditingProduto] = useState<Product | null>(null);
+	const [editingCategoria, setEditingCategoria] = useState<CategoriaSchema | null>(null);
+
 	const [filterLojaId, setFilterLojaId] = useState<string>("all");
 	const [filterCategoriaId, setFilterCategoriaId] = useState<string>("all");
 
-	const produtos = MOCK_PRODUTOS;
-	const categorias = MOCK_CATEGORIAS;
-	const lojas = MOCK_LOJAS;
+	// Queries
+	const { data: categorias = [] } = useCategorias();
+	const { data: lojas = [] } = useLojas();
 
-	// Filtered products
+	const { data: apiProdutos = [] } = useProdutosByLoja(
+		filterLojaId === "all" ? undefined : filterLojaId
+	);
+
+	// Converte ApiProduct → Product
+	const produtos: Product[] = useMemo(
+		() =>
+			(apiProdutos ?? []).map((item) => ({
+				id: item.produto.id,
+				nome: item.produto.nome,
+				descricao: item.produto.descricao,
+				preco: item.produto.preco,
+				imagemc: item.produto.imagemc,
+				categoriaId: item.categoria.id,
+				lojaIds: filterLojaId === "all" ? lojas!.map((l) => l.id) : [filterLojaId],
+			})),
+		[apiProdutos, filterLojaId, lojas]
+	);
+
 	const filteredProdutos = useMemo(() => {
 		return produtos.filter((produto) => {
-			const lojaMatch = filterLojaId === "all" || produto.lojaIds.includes(filterLojaId);
 			const categoriaMatch =
 				filterCategoriaId === "all" || produto.categoriaId === filterCategoriaId;
-			return lojaMatch && categoriaMatch;
+			return categoriaMatch;
 		});
-	}, [produtos, filterLojaId, filterCategoriaId]);
+	}, [produtos, filterCategoriaId]);
 
-	const openProdutoModal = (produto?: any) => {
-		setEditingProduto(produto || null);
+	const { mutate: createProduto } = useCreateProduto();
+	const { mutate: createCategoria } = useCreateCategoria();
+
+	const openNovoProdutoModal = () => {
+		setEditingProduto(null);
 		setProdutoModalOpen(true);
 	};
 
-	const openCategoriaModal = (categoria?: any) => {
+	const openProdutoModal = (produto: Product) => {
+		setEditingProduto(produto);
+		setProdutoModalOpen(true);
+	};
+
+	const openCategoriaModal = (categoria?: CategoriaSchema) => {
 		setEditingCategoria(categoria || null);
 		setCategoriaModalOpen(true);
 	};
@@ -116,10 +84,8 @@ export default function ProdutosPage() {
 	return (
 		<div className="min-h-screen bg-background">
 			<div className="max-w-7xl mx-auto px-4 py-6">
-				{/* Header Card */}
 				<div className="bg-item rounded-2xl shadow-md overflow-hidden mb-6">
 					<CommonHeader extra={<ExtraHeader />} />
-
 					<div className="p-6">
 						<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 							<div>
@@ -128,7 +94,6 @@ export default function ProdutosPage() {
 									Gerencie produtos, categorias e atribuições de lojas
 								</p>
 							</div>
-
 							<div className="flex flex-wrap gap-2">
 								<button
 									onClick={() => openCategoriaModal()}
@@ -138,7 +103,7 @@ export default function ProdutosPage() {
 									<span>Nova Categoria</span>
 								</button>
 								<button
-									onClick={() => openProdutoModal()}
+									onClick={() => openNovoProdutoModal()}
 									className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold bg-secondary/75 hover:bg-secondary/90 transition-all duration-300 shadow-sm active:scale-[0.98]"
 								>
 									<Plus className="w-4 h-4" />
@@ -147,7 +112,7 @@ export default function ProdutosPage() {
 							</div>
 						</div>
 
-						{/* Filters */}
+						{/* Filtros */}
 						<div className="mt-6 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
 							<div className="flex items-center gap-2 text-sm font-medium text-foreground/70">
 								<Filter className="w-4 h-4" />
@@ -162,7 +127,7 @@ export default function ProdutosPage() {
 									<SelectItem value="all" className="text-foreground">
 										Todas as lojas
 									</SelectItem>
-									{lojas.map((loja) => (
+									{lojas?.map((loja) => (
 										<SelectItem key={loja.id} value={loja.id} className="text-foreground">
 											{loja.nome}
 										</SelectItem>
@@ -189,10 +154,10 @@ export default function ProdutosPage() {
 					</div>
 				</div>
 
-				{/* Products Grid */}
+				{/* Produtos */}
 				{filteredProdutos.length === 0 ? (
 					<div className="bg-item rounded-2xl shadow-md p-12 text-center">
-						<Package className="w-16 h-16 text-foreground/20 mx-auto mb-4" />
+						<Package className="w-16 h-16 text-foreground/90 mx-auto mb-4" />
 						<h3 className="text-xl font-semibold text-foreground/70 mb-2">
 							Nenhum produto encontrado
 						</h3>
@@ -205,7 +170,7 @@ export default function ProdutosPage() {
 								key={produto.id}
 								produto={produto}
 								categoria={categorias.find((c) => c.id === produto.categoriaId)}
-								lojas={lojas}
+								lojas={lojas!}
 								onEdit={openProdutoModal}
 								onDelete={() => {}}
 								onRemoveFromLoja={() => {}}
@@ -214,7 +179,6 @@ export default function ProdutosPage() {
 					</div>
 				)}
 
-				{/* Footer */}
 				<CommonFooter roundedTop />
 			</div>
 
@@ -225,8 +189,12 @@ export default function ProdutosPage() {
 					setProdutoModalOpen(false);
 					setEditingProduto(null);
 				}}
-				onSubmit={() => {}}
-				produto={editingProduto}
+				onSubmit={(data) =>
+					createProduto({
+						...data,
+					})
+				}
+				produto={editingProduto ?? undefined}
 				categorias={categorias}
 				lojas={lojas}
 				isLoading={false}
@@ -238,8 +206,13 @@ export default function ProdutosPage() {
 					setCategoriaModalOpen(false);
 					setEditingCategoria(null);
 				}}
-				onSubmit={() => {}}
-				categoria={editingCategoria}
+				onSubmit={(data) =>
+					createCategoria({
+						nome: data.nome,
+						descricao: data.descricao || "",
+					})
+				}
+				categoria={editingCategoria ?? undefined}
 				isLoading={false}
 			/> */}
 		</div>

@@ -4,4 +4,6 @@ interface Product {
     descricao: string
     preco: number
     imagemc?: string
+    lojaIds?: string[];
+    categoriaId?: string;
 }

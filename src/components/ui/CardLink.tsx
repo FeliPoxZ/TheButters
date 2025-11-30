@@ -6,10 +6,27 @@ interface Props {
 	svg: ReactNode;
 	title: string;
 	description: string;
+	disabled?: boolean;
 }
 
-function CardLink({ href, svg, title, description }: Props) {
-	return (
+function CardLink({ href, svg, title, description, disabled }: Props) {
+	return disabled ? (
+		<span
+			className="
+					bg-banner/30
+					rounded-xl shadow-md 
+					border-2 border-secondary/40
+					transition-all  
+					active:scale-[0.98]
+					p-6 flex flex-col items-center justify-center text-center
+				"
+		>
+			{svg}
+
+			<h3 className="font-semibold text-lg text-foreground/80">{title}</h3>
+			<p className="text-sm text-foreground/70 mt-1">{description}</p>
+		</span>
+	) : (
 		<Link
 			href={href}
 			className="

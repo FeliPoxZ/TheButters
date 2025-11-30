@@ -65,6 +65,7 @@ export default function GestaoHub() {
 
 							{/* BOTÃO BALCÃO */}
 							<CardLink
+								disabled
 								href="/gestao/balcao"
 								title="Balcão"
 								description="Acesso rápido ao sistema de atendimento do balcão."

@@ -2,31 +2,17 @@
 
 import { Pencil, Trash2, Store } from "lucide-react";
 
-interface Produto {
-	id: string;
-	nome: string;
-	descricao?: string;
-	preco: number;
-	categoriaId: string;
-	lojaIds: string[];
-}
-
 interface Categoria {
 	id: string;
 	nome: string;
 	descricao?: string;
 }
 
-interface Loja {
-	id: string;
-	nome: string;
-}
-
 interface ProdutoCardProps {
-	produto: Produto;
+	produto: Product;
 	categoria?: Categoria;
 	lojas: Loja[];
-	onEdit: (produto: Produto) => void;
+	onEdit: (produto: Product) => void;
 	onDelete: (produtoId: string) => void;
 	onRemoveFromLoja: (produtoId: string, lojaId: string) => void;
 }
@@ -39,7 +25,7 @@ export default function ProdutoCard({
 	onDelete,
 	onRemoveFromLoja,
 }: ProdutoCardProps) {
-	const produtoLojas = lojas.filter((loja) => produto.lojaIds.includes(loja.id));
+	const produtoLojas = lojas.filter((loja) => produto.lojaIds?.includes(loja.id));
 
 	return (
 		<div className="bg-item rounded-xl shadow-md p-5 border border-foreground/5 hover:shadow-lg transition-shadow duration-300">

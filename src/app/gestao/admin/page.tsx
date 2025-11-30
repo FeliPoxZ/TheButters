@@ -32,6 +32,7 @@ export default function AdminHub() {
 						"
 						>
 							<CardLink
+								disabled
 								href="/gestao/admin/usuarios"
 								svg={
 									<svg
@@ -76,6 +77,7 @@ export default function AdminHub() {
 								description="Cadastre e atualize os produtos disponíveis em todas as filiais."
 							/>
 							<CardLink
+								disabled
 								href="/gestao/admin/filiais"
 								svg={
 									<svg
