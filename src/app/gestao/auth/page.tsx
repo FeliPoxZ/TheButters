@@ -27,7 +27,7 @@ const loginSchema = z.object({
 		.max(255),
 });
 
-export type LoginSchema = z.infer<typeof loginSchema>;
+type LoginSchema = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
 	const {

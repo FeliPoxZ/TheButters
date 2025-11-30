@@ -1,3 +1,4 @@
+import { CELULAR_BR_REGEX, CPF_REGEX } from "@/lib/regex";
 import { z } from "zod";
 
 /* -------------------------------------------
@@ -26,15 +27,15 @@ export type LoginResponse = z.infer<typeof loginResponseSchema>;
 ------------------------------------------- */
 
 export const registerSchema = z.object({
-	email: z.string().min(3).max(100).email(),
-	senha: z.string().min(5).max(255),
-	nome: z.string().min(5).max(200),
-	sobrenome: z.string().min(5).max(200),
-	idade: z.number().int().nonnegative(),
-	cpf: z.string().min(11).max(14),
-	numerocell: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Número inválido (E.164)"),
+	nome: z.string().min(1, "Nome obrigatório"),
+	sobrenome: z.string().min(1, "Sobrenome obrigatório"),
+	email: z.string().email("Email inválido"),
+	senha: z.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
+	idade: z.number().min(1, "Idade inválida"),
+	cpf: z.string().regex(CPF_REGEX, "CPF deve estar no formato 000.000.000-00"),
+	numerocell: z.string().regex(CELULAR_BR_REGEX, "Celular inválido. Use o formato +5511999999999"),
 	iszap: z.boolean(),
-	lojaid: z.string().uuid().nullable().optional(),
+	lojaid: z.string().uuid().nullable(),
 });
 export type RegisterInput = z.infer<typeof registerSchema>;
 
@@ -48,9 +49,9 @@ export const userCreateSchema = z.object({
 	nome: z.string().min(5).max(200),
 	sobrenome: z.string().min(5).max(200),
 	idade: z.number().int().nonnegative(),
-	cpf: z.string().min(11).max(14),
+	cpf: z.string().regex(CPF_REGEX, "CPF inválido"),
 	tipo: z.string().length(2),
-	numerocell: z.string().regex(/^\+?[1-9]\d{1,14}$/),
+	numerocell: z.string().regex(CELULAR_BR_REGEX, "Celular inválido. Use o formato +5511999999999"),
 	iszap: z.boolean(),
 	lojaid: z.string().uuid().nullable().optional(),
 });
@@ -101,12 +102,12 @@ export const userUpdateSchema = z.object({
 	nome: z.string().min(5).max(200).optional(),
 	sobrenome: z.string().min(5).max(200).optional(),
 	idade: z.number().int().optional(),
-	cpf: z.string().min(11).max(14).optional(),
+	cpf: z.string().regex(CPF_REGEX, "CPF inválido").optional(),
 	tipo: z.string().length(2).optional(),
 	status: z.string().length(2).optional(),
 	numerocell: z
 		.string()
-		.regex(/^\+?[1-9]\d{1,14}$/)
+		.regex(CELULAR_BR_REGEX, "Celular inválido. Use o formato +5511999999999")
 		.optional(),
 	iszap: z.boolean().optional(),
 	lojaid: z.string().uuid().optional(),

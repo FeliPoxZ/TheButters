@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { FieldError, UseFormRegister } from "react-hook-form";
 
@@ -9,6 +10,8 @@ type FormInputProps = {
 	type?: string;
 	placeholder?: string;
 	extra?: React.ReactNode;
+	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	registerOptions?: Parameters<UseFormRegister<any>>[1];
 };
 
 export default function FormInput({
@@ -19,6 +22,8 @@ export default function FormInput({
 	type = "text",
 	placeholder,
 	extra,
+	onChange,
+	registerOptions
 }: FormInputProps) {
 	const [showPassword, setShowPassword] = useState(false);
 	const isPassword = type === "password";
@@ -32,10 +37,16 @@ export default function FormInput({
 
 			<div className="relative">
 				<input
-					{...register(name)}
+					{...register(name, registerOptions)}
+					onChange={(e) => {
+						if (onChange) onChange(e);
+					}}
 					type={isPassword && showPassword ? "text" : type}
 					placeholder={placeholder}
-					className="w-full rounded-lg border px-4 py-2 pr-12 outline-none placeholder:opacity-60 bg-light-foreground text-foreground border-foreground/10"
+					className={cn(
+						"w-full rounded-lg border pl-4 py-2 outline-none placeholder:opacity-60 bg-light-foreground text-foreground border-foreground/10",
+						isPassword ? "pr-12" : "pr-4"
+					)}
 				/>
 
 				{isPassword && (

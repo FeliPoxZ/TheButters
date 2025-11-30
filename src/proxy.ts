@@ -19,10 +19,7 @@ export function proxy(req: NextRequest) {
 
 	if (pathname.includes("/finalizar-pedido")) {
 		// Liberar sub-rotas válidas
-		if (
-			pathname.includes("/consumo") ||
-			pathname.includes("/pagamento")
-		) {
+		if (pathname.includes("/consumo") || pathname.includes("/pagamento")) {
 			return NextResponse.next();
 		}
 
@@ -36,6 +33,15 @@ export function proxy(req: NextRequest) {
 
 		// Redirecionar para a primeira etapa
 		return NextResponse.redirect(new URL(`/loja/${slug}/finalizar-pedido/consumo`, req.url));
+	}
+
+	if (pathname === "/loja/cliente") {
+		const customer = req.cookies.get("customer")?.value;
+
+		// Se não tem customer → login
+		if (!customer) {
+			return NextResponse.redirect(new URL("/loja/cliente-login", req.url));
+		}
 	}
 
 	//

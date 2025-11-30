@@ -6,24 +6,18 @@ import FormInput from "@/components/common/FormInput";
 import { useCustomerMutation } from "@/hooks/queries/useCustomer";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ms from "ms";
-import {useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import z from "zod";
-
-const loginSchema = z.object({
-	email: z.string().min(3, "Email muito curto").max(100).email("Email inválido"),
-	senha: z.string().min(5, "Senha muito curta").max(255),
-});
-
-export type LoginSchema = z.infer<typeof loginSchema>;
+import { LoginInput, loginSchema } from "@/schemas/userSchema";
+import Link from "next/link";
 
 export default function CustomerLogin() {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<LoginSchema>({
+	} = useForm<LoginInput>({
 		resolver: zodResolver(loginSchema),
 		defaultValues: { email: "", senha: "" },
 	});
@@ -31,11 +25,11 @@ export default function CustomerLogin() {
 	const router = useRouter();
 
 	const searchParams = useSearchParams();
-	const redirectTo = searchParams.get("redirect") ?? "/";
+	const redirectTo = searchParams.get("redirect") ?? "/loja/cliente";
 
 	const loginMutation = useCustomerMutation();
 
-	async function onSubmit(values: LoginSchema) {
+	async function onSubmit(values: LoginInput) {
 		loginMutation.mutate(
 			{ data: values },
 			{
@@ -97,6 +91,12 @@ export default function CustomerLogin() {
 									{loginMutation.isPending ? "Entrando..." : "Entrar"}
 								</button>
 							</div>
+							<p className="text-sm mt-3 text-center">
+								Não tem conta?{" "}
+								<Link href={`/loja/cliente-registro?redirect=${redirectTo}`} className="text-primary font-semibold">
+									Cadastre-se
+								</Link>
+							</p>
 						</form>
 					</div>
 
