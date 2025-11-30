@@ -1,7 +1,7 @@
 "use client";
 
 import CommonHeader from "@/components/common/CommonHeader";
-import CardLink from "@/components/ui/gestao/CardLink";
+import CardLink from "@/components/ui/CardLink";
 import { isDevLocalClient } from "@/lib/mode";
 import CommonFooter from "@/components/common/CommonFooter";
 import ExtraHeader from "@/components/ui/gestao/ExtraHeader";

@@ -1,4 +1,4 @@
-import { Produto } from "@/store/products-store";
+import { Produto } from "@/stores/products-store";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 

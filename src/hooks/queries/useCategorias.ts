@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Categoria } from "@/store/products-store";
+import type { Categoria } from "@/stores/products-store";
 
 // Hook para buscar todas as categorias
 export function useGetCategorias() {

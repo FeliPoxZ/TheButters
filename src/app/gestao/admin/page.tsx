@@ -1,7 +1,7 @@
 "use client";
 
 import CommonHeader from "@/components/common/CommonHeader";
-import CardLink from "@/components/ui/gestao/CardLink";
+import CardLink from "@/components/ui/CardLink";
 import ExtraHeader from "@/components/ui/gestao/ExtraHeader";
 
 export default function AdminHub() {

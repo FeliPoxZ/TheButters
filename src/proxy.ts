@@ -17,6 +17,28 @@ export function proxy(req: NextRequest) {
 		return NextResponse.next();
 	}
 
+	if (pathname.includes("/finalizar-pedido")) {
+		// Liberar sub-rotas válidas
+		if (
+			pathname.includes("/consumo") ||
+			pathname.includes("/login") ||
+			pathname.includes("/pagamento")
+		) {
+			return NextResponse.next();
+		}
+
+		// Capturar slug dinamicamente
+		const match = pathname.match(/^\/([^\/]+)\/pedido\/finalizar-pedido/);
+		const slug = match?.[1];
+
+		if (!slug) {
+			return NextResponse.next();
+		}
+
+		// Redirecionar para a primeira etapa
+		return NextResponse.redirect(new URL(`/${slug}/pedido/finalizar-pedido/consumo`, req.url));
+	}
+
 	//
 	// 🔧 AMBIENTE DE DESENVOLVIMENTO
 	//
