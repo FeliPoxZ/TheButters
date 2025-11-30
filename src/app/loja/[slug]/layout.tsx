@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import LojaClient from "@/services/LojaClient";
 import { formatSlugFromLoja } from "@/lib/slug";
 import { InjectLojaId } from "./InjectLojaId";
-import QueryProvider from "@/components/common/QueryProvider";
 
 type SlugLayoutProps = {
 	params: Promise<{ slug: string }>; 
@@ -15,13 +14,13 @@ export default function SlugLayout({ params, children }: SlugLayoutProps) {
 
 	// Modo DEV → permitir /dev sem checar banco
 	if (process.env.NODE_ENV === "development" && slug === "dev") {
-		return <QueryProvider>{children}</QueryProvider>;
+		return <>{children}</>;
 	}
 
 	return (
-		<QueryProvider>
+		<>
 			<SlugResolver slug={slug}>{children}</SlugResolver>
-		</QueryProvider>
+		</>
 	);
 }
 

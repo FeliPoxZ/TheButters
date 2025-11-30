@@ -1,10 +1,10 @@
 "use client";
 
-import { useCheckoutStore } from "@/app/[slug]/stores/checkoutStore";
+import { useCheckoutStore } from "@/app/loja/[slug]/stores/checkoutStore";
 import CommonFooter from "@/components/common/CommonFooter";
 import CommonHeader from "@/components/common/CommonHeader";
 import ColumnView from "@/components/layout/ColumnView";
-import { useCustomerStore } from "@/stores/customerStore";
+import { useCustomerStore } from "@/app/loja/stores/customerStore";
 import { BuildingStorefrontIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
@@ -36,7 +36,7 @@ export default function Consumo() {
 						<h2 className="text-foreground/70 text-xl">Escolha o modo de consumo:</h2>
 						<section className="w-full grid grid-cols-1 md:flex md:justify-center gap-10 m-auto">
 							<Link
-								href={customer? `/${slug}/pedido/finalizar-pedido/pagamento` : `/cliente-login?redirect=${pathname}`}
+								href={customer? `/loja/${slug}/finalizar-pedido/pagamento` : `/loja/cliente-login?redirect=${pathname}`}
 								onClick={() => setConsumo("M")}
 								className="
 					bg-banner/70 hover:bg-banner/90 
@@ -54,7 +54,7 @@ export default function Consumo() {
 								<p className="text-lg text-foreground/70 mt-1">Consumir no local</p>
 							</Link>
 							<Link
-								href={customer? `/${slug}/pedido/finalizar-pedido/pagamento` : `/cliente-login?redirect=${pathname}`}
+								href={customer? `/loja/${slug}/finalizar-pedido/pagamento` : `/loja/cliente-login?redirect=${pathname}`}
 								onClick={() => setConsumo("R")}
 								className="
 					bg-banner/70 hover:bg-banner/90 

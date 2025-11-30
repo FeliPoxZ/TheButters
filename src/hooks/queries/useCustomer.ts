@@ -1,7 +1,7 @@
 
 import { LoginInput } from "@/schemas/userSchema";
 import AuthClient from "@/services/AuthClient";
-import { useCustomerStore } from "@/stores/customerStore";
+import { useCustomerStore } from "@/app/loja/stores/customerStore";
 import { useMutation } from "@tanstack/react-query";
 
 export function useCustomerMutation() {

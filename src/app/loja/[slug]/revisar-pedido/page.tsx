@@ -1,7 +1,6 @@
 "use client";
 
 import CommonHeader from "@/components/common/CommonHeader";
-import useBagStore from "../../stores/useBagStore";
 import CommonFooter from "@/components/common/CommonFooter";
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
@@ -11,6 +10,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BanknotesIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 import Line from "@/components/common/Line";
+import useBagStore from "../stores/useBagStore";
 
 export default function RevisarPedido() {
 	const items = useBagStore((s) => s.items);
@@ -63,14 +63,14 @@ export default function RevisarPedido() {
 						<Line />
 						<RowView className="gap-2 w-full">
 							<Link
-								href={`/${slug}/cardapio`}
+								href={`/loja/${slug}/cardapio`}
 								className="h-10 w-full bg-primary/60 rounded-sm font-poppins flex justify-center items-center gap-2 text-foreground/90"
 							>
 								<p className="font-medium">Voltar</p>
 								<ArrowUturnLeftIcon className="size-5 text-inherit" />
 							</Link>
 							<Link
-								href={`/${slug}/pedido/finalizar-pedido/consumo`}
+								href={`/loja/${slug}/finalizar-pedido/consumo`}
 								className="px-3 h-10 w-full bg-soft-green rounded-sm font-poppins flex justify-center items-center gap-2 text-foreground/90"
 							>
 								<p className="font-medium">Pagamento</p>

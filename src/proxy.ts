@@ -28,7 +28,7 @@ export function proxy(req: NextRequest) {
 		}
 
 		// Capturar slug dinamicamente
-		const match = pathname.match(/^\/([^\/]+)\/pedido\/finalizar-pedido/);
+		const match = pathname.match(/^\/([^\/]+)\/finalizar-pedido/);
 		const slug = match?.[1];
 
 		if (!slug) {
@@ -36,7 +36,7 @@ export function proxy(req: NextRequest) {
 		}
 
 		// Redirecionar para a primeira etapa
-		return NextResponse.redirect(new URL(`/${slug}/pedido/finalizar-pedido/consumo`, req.url));
+		return NextResponse.redirect(new URL(`/loja/${slug}/finalizar-pedido/consumo`, req.url));
 	}
 
 	//
@@ -45,7 +45,7 @@ export function proxy(req: NextRequest) {
 	if (isDev) {
 		// Se estiver na home "/" → redirecionar para /dev/cardapio
 		if (pathname === "/") {
-			return NextResponse.redirect(new URL("/dev/cardapio", req.url));
+			return NextResponse.redirect(new URL("/loja/dev/cardapio", req.url));
 		}
 
 		// Permite rotas dev

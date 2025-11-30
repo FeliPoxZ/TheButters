@@ -1,8 +1,8 @@
 import { Modal } from "@/components/common/Modal";
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
-import { useProductModalStore } from "@/app/[slug]/stores/productModalStore";
-import useBagStore from "@/app/[slug]/stores/useBagStore";
+import { useProductModalStore } from "@/app/loja/[slug]/stores/productModalStore";
+import useBagStore from "@/app/loja/[slug]/stores/useBagStore";
 import ms from "ms";
 import Image from "next/image";
 import { useState } from "react";

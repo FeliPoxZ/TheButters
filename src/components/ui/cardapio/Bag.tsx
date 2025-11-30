@@ -3,7 +3,7 @@ import RowView from "@/components/layout/RowView";
 import { cn, toPrice } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import BagItem from "./BagItem";
-import useBagStore from "@/app/[slug]/stores/useBagStore";
+import useBagStore from "@/app/loja/[slug]/stores/useBagStore";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -110,7 +110,7 @@ function Bag() {
 								</button>
 								{qtd > 0 ? (
 									<Link
-										href={`/${slug}/pedido/revisar-pedido`}
+										href={`/loja/${slug}/revisar-pedido`}
 										className="px-3 w-fit h-10 bg-soft-green rounded-sm font-poppins flex justify-between items-center gap-1"
 									>
 										<p>REVISAR</p>

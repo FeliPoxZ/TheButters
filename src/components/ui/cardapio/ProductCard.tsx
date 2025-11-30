@@ -1,7 +1,7 @@
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
 import { cn } from "@/lib/utils";
-import { useProductModalStore } from "@/app/[slug]/stores/productModalStore";
+import { useProductModalStore } from "@/app/loja/[slug]/stores/productModalStore";
 import Image from "next/image";
 
 interface Props {
