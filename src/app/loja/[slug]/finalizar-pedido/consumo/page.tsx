@@ -36,7 +36,11 @@ export default function Consumo() {
 						<h2 className="text-foreground/70 text-xl">Escolha o modo de consumo:</h2>
 						<section className="w-full grid grid-cols-1 md:flex md:justify-center gap-10 m-auto">
 							<Link
-								href={customer? `/loja/${slug}/finalizar-pedido/pagamento` : `/loja/cliente-login?redirect=${pathname}`}
+								href={
+									customer
+										? `/loja/${slug}/finalizar-pedido/pagamento`
+										: `/loja/cliente-login?redirect=${pathname.replace("/consumo", "/pagamento")}`
+								}
 								onClick={() => setConsumo("M")}
 								className="
 					bg-banner/70 hover:bg-banner/90 
@@ -54,7 +58,11 @@ export default function Consumo() {
 								<p className="text-lg text-foreground/70 mt-1">Consumir no local</p>
 							</Link>
 							<Link
-								href={customer? `/loja/${slug}/finalizar-pedido/pagamento` : `/loja/cliente-login?redirect=${pathname}`}
+								href={
+									customer
+										? `/loja/${slug}/finalizar-pedido/pagamento`
+										: `/loja/cliente-login?redirect=${pathname.replace("/consumo", "/pagamento")}`
+								}
 								onClick={() => setConsumo("R")}
 								className="
 					bg-banner/70 hover:bg-banner/90 

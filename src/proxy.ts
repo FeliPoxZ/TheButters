@@ -21,14 +21,13 @@ export function proxy(req: NextRequest) {
 		// Liberar sub-rotas válidas
 		if (
 			pathname.includes("/consumo") ||
-			pathname.includes("/login") ||
 			pathname.includes("/pagamento")
 		) {
 			return NextResponse.next();
 		}
 
 		// Capturar slug dinamicamente
-		const match = pathname.match(/^\/([^\/]+)\/finalizar-pedido/);
+		const match = pathname.match(/^\/loja\/([^\/]+)\/finalizar-pedido/);
 		const slug = match?.[1];
 
 		if (!slug) {
