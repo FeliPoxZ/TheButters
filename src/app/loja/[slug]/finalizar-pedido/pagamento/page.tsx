@@ -11,8 +11,11 @@ import { useLojaStore } from "../../stores/lojaStore";
 import { useEffect, useState } from "react";
 import { usePedido } from "@/hooks/queries/usePedido";
 import { toast } from "react-toastify";
-import { toPrice } from "@/lib/utils";
+import { cn, toPrice } from "@/lib/utils";
 import ms from "ms";
+import RowView from "@/components/layout/RowView";
+import Link from "next/link";
+import { UserIcon } from "@heroicons/react/24/outline";
 
 export default function Pagamento() {
 	const consumo = useCheckoutStore((s) => s.consumo);
@@ -116,7 +119,19 @@ export default function Pagamento() {
 	return (
 		<div className="grid grid-rows-[auto_1fr_auto] max-w-7xl h-screen mx-auto px-4 py-6 overflow-y-auto">
 			<div className="bg-item rounded-2xl shadow-md overflow-hidden mb-6">
-				<CommonHeader />
+				<CommonHeader
+					extra={
+						<RowView align="center" className={cn(customer && "gap-2", "text-extra-orange")}>
+							<p className="text-lg">{customer ? customer.nome : ""}</p>
+							<Link
+								href={`/loja/cliente${customer ? "" : "-login"}?redirect=${pathname}`}
+								className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 size-10 transition-all duration-200 hover:scale-110 shadow-sm"
+							>
+								<UserIcon className="size-6 text-inherit" />
+							</Link>
+						</RowView>
+					}
+				/>
 				<div className="py-4 px-6">
 					<h2 className="text-2xl md:text-3xl font-bold text-foreground/90 mb-3">
 						Finalização do Pedido

@@ -23,7 +23,6 @@ export default function CustomerLogin() {
 	});
 
 	const router = useRouter();
-
 	const searchParams = useSearchParams();
 	const redirectTo = searchParams.get("redirect") ?? "/loja/cliente";
 
@@ -93,7 +92,10 @@ export default function CustomerLogin() {
 							</div>
 							<p className="text-sm mt-3 text-center">
 								Não tem conta?{" "}
-								<Link href={`/loja/cliente-registro?redirect=${redirectTo}`} className="text-primary font-semibold">
+								<Link
+									href={`/loja/cliente-registro?redirect=${redirectTo}`}
+									className="text-primary font-semibold"
+								>
 									Cadastre-se
 								</Link>
 							</p>

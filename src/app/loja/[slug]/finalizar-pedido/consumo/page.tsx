@@ -5,9 +5,11 @@ import CommonFooter from "@/components/common/CommonFooter";
 import CommonHeader from "@/components/common/CommonHeader";
 import ColumnView from "@/components/layout/ColumnView";
 import { useCustomerStore } from "@/app/loja/stores/customerStore";
-import { BuildingStorefrontIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { BuildingStorefrontIcon, ShoppingBagIcon, UserIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import RowView from "@/components/layout/RowView";
+import { cn } from "@/lib/utils";
 
 export default function Consumo() {
 	const setConsumo = useCheckoutStore((s) => s.setConsumo);
@@ -20,7 +22,19 @@ export default function Consumo() {
 	return (
 		<div className="grid grid-rows-[auto_1fr_auto] max-w-7xl h-screen mx-auto px-4 py-6 overflow-y-auto">
 			<div className="bg-item rounded-2xl shadow-md overflow-hidden mb-6">
-				<CommonHeader />
+				<CommonHeader
+					extra={
+						<RowView align="center" className={cn(customer && "gap-2", "text-extra-orange")}>
+							<p className="text-lg">{customer ? customer.nome : ""}</p>
+							<Link
+								href={`/loja/cliente${customer ? "" : "-login"}?redirect=${pathname}`}
+								className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 size-10 transition-all duration-200 hover:scale-110 shadow-sm"
+							>
+								<UserIcon className="size-6 text-inherit" />
+							</Link>
+						</RowView>
+					}
+				/>
 				<div className="py-4 px-6">
 					<h2 className="text-2xl md:text-3xl font-bold text-foreground/90 mb-3">
 						Finalização do Pedido

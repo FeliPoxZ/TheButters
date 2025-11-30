@@ -4,13 +4,14 @@ import CommonHeader from "@/components/common/CommonHeader";
 import CommonFooter from "@/components/common/CommonFooter";
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
-import { toPrice } from "@/lib/utils";
-import { useParams } from "next/navigation";
+import { cn, toPrice } from "@/lib/utils";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BanknotesIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
+import { BanknotesIcon, ArrowUturnLeftIcon, UserIcon } from "@heroicons/react/24/outline";
 import Line from "@/components/common/Line";
 import useBagStore from "../stores/useBagStore";
+import { useCustomerStore } from "../../stores/customerStore";
 
 export default function RevisarPedido() {
 	const items = useBagStore((s) => s.items);
@@ -30,10 +31,25 @@ export default function RevisarPedido() {
 
 	const { slug } = useParams();
 
+	const customer = useCustomerStore((s) => s.customer);
+	const pathname = usePathname();
+
 	return (
 		<div className="grid grid-rows-[auto_1fr_auto] max-w-7xl min-h-screen md:h-screen mx-auto px-4 py-6 overflow-y-auto">
 			<div className="bg-item rounded-2xl shadow-md overflow-hidden mb-6">
-				<CommonHeader />
+				<CommonHeader
+					extra={
+						<RowView align="center" className={cn(customer && "gap-2", "text-extra-orange")}>
+							<p className="text-lg">{customer ? customer.nome : ""}</p>
+							<Link
+								href={`/loja/cliente${customer ? "" : "-login"}?redirect=${pathname}`}
+								className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 size-10 transition-all duration-200 hover:scale-110 shadow-sm"
+							>
+								<UserIcon className="size-6 text-inherit" />
+							</Link>
+						</RowView>
+					}
+				/>
 				<div className="py-4 px-6">
 					<h2 className="text-2xl md:text-3xl font-bold text-foreground/90 mb-3">
 						Revise seu pedido

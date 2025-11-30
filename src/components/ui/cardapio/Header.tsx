@@ -1,10 +1,14 @@
+import { useCustomerStore } from "@/app/loja/stores/customerStore";
 import Line from "@/components/common/Line";
 import ColumnView from "@/components/layout/ColumnView";
 import RowView from "@/components/layout/RowView";
 import Wrapper from "@/components/layout/Wrapper";
+import { cn } from "@/lib/utils";
+import { UserIcon } from "@heroicons/react/24/outline";
 import ms from "ms";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { toast } from "react-toastify";
 
 function Header() {
@@ -21,6 +25,9 @@ function Header() {
 
 	const now = new Date();
 	const hour = now.getHours();
+
+	const customer = useCustomerStore((s) => s.customer);
+	const pathname = usePathname()
 
 	return (
 		<header className="w-full h-auto">
@@ -41,25 +48,15 @@ function Header() {
 							</h1>
 						</RowView>
 						<RowView className="gap-2 md:gap-4 text-extra-orange">
-							<button className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 aspect-square h-10 transition-all duration-200 hover:scale-110 shadow-sm">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									strokeWidth={1.5}
-									stroke="currentColor"
-									className="size-6 text-inherit"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-									/>
-								</svg>
-							</button>
+							<RowView align="center" className={cn(customer && "gap-2")}>
+								<p className="text-lg">{customer ? customer.nome : ""}</p>
+								<Link href={`/loja/cliente${customer? "" : "-login"}?redirect=${pathname}` } className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 size-10 transition-all duration-200 hover:scale-110 shadow-sm">
+									<UserIcon className="size-6 text-inherit" />
+								</Link>
+							</RowView>
 							<button
 								onClick={handleShare}
-								className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 aspect-square h-10 transition-all duration-200 hover:scale-110 shadow-sm"
+								className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 size-10 transition-all duration-200 hover:scale-110 shadow-sm"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -94,11 +91,15 @@ function Header() {
 						</RowView>
 						{hour >= 9 && hour < 22 ? (
 							<div className={"bg-soft-green w-full py-1 md:py-2 rounded-sm"}>
-								<p className="text-on-soft-green font-semibold text-center">Loja Aberta • Faça Seu Pedido!</p>
+								<p className="text-on-soft-green font-semibold text-center">
+									Loja Aberta • Faça Seu Pedido!
+								</p>
 							</div>
 						) : (
 							<div className={"bg-soft-red w-full py-1 md:py-2 rounded-sm"}>
-								<p className="text-on-soft-red/90 font-semibold text-center">Loja Fechada • Abre Novamente Amanhã às 9:00</p>
+								<p className="text-on-soft-red/90 font-semibold text-center">
+									Loja Fechada • Abre Novamente Amanhã às 9:00
+								</p>
 							</div>
 						)}
 					</ColumnView>
