@@ -21,7 +21,7 @@ class PedidoClient {
 	}
 
 	async getAll() {
-		const res = await axiosInstance.get<PedidoResponse>(`/pedidos`, {
+		const res = await axiosInstance.get<PedidoResponse[]>(`/pedidos`, {
 			headers: {
 				Authorization: `Bearer ${getToken()}`,
 			},
@@ -47,6 +47,13 @@ class PedidoClient {
 			headers: {
 				Authorization: `Bearer ${getToken()}`,
 			},
+		});
+		return res.data;
+	}
+
+	async delete(id: string) {
+		const res = await axiosInstance.delete(`/pedidos/${id}`, {
+			headers: { Authorization: `Bearer ${getToken()}` },
 		});
 		return res.data;
 	}

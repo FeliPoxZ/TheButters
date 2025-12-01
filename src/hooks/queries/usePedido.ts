@@ -4,17 +4,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const pedidoClient = new PedidoClient();
 
-export function usePedido(id?: string) {
+export function usePedido() {
 	const qc = useQueryClient();
 
 	// =============================
-	// GET
+	// GET ALL
 	// =============================
-	const getPedido = useQuery<PedidoResponse>({
-		queryKey: ["pedido", id],
-		queryFn: () => pedidoClient.getById(id!),
-		enabled: !!id,
+	const getAllPedidos = useQuery<PedidoResponse[]>({
+		queryKey: ["pedidos"],
+		queryFn: () => pedidoClient.getAll(),
 	});
+
 
 	// =============================
 	// CREATE
@@ -23,7 +23,7 @@ export function usePedido(id?: string) {
 		mutationFn: (params: { data: PedidoCreateInput; token: string }) =>
 			pedidoClient.create(params.data, params.token),
 		onSuccess: (pedido) => {
-			qc.setQueryData(["pedido", pedido.id], pedido);
+			qc.setQueryData(["pedidos", pedido.id], pedido);
 		},
 	});
 
@@ -34,13 +34,24 @@ export function usePedido(id?: string) {
 		mutationFn: ({ id, data }: { id: string; data: PedidoUpdateInput }) =>
 			pedidoClient.update(id, data),
 		onSuccess: (pedido) => {
-			qc.setQueryData(["pedido", pedido.id], pedido);
+			qc.setQueryData(["pedidos", pedido.id], pedido);
+		},
+	});
+
+	// =============================
+	// DELETE / CANCELAR
+	// =============================
+	const deletePedido = useMutation({
+		mutationFn: (id: string) => pedidoClient.delete(id),
+		onSuccess: () => {
+			qc.invalidateQueries({ queryKey: ["pedidos"] });
 		},
 	});
 
 	return {
-		getPedido,
+		getAllPedidos,
 		createPedido,
 		updatePedido,
+		deletePedido
 	};
 }
