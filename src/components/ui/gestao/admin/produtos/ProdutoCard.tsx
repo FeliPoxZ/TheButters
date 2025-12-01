@@ -1,5 +1,6 @@
 "use client";
 
+import { toPrice } from "@/lib/utils";
 import { Pencil, Trash2, Store } from "lucide-react";
 
 interface Categoria {
@@ -61,7 +62,7 @@ export default function ProdutoCard({
 			)}
 
 			<div className="flex items-center justify-between mb-3 pb-3 border-b border-foreground/10">
-				<span className="text-xl font-bold text-secondary">R$ {produto.preco.toFixed(2)}</span>
+				<span className="text-xl font-bold text-secondary">{toPrice(produto.preco)}</span>
 			</div>
 
 			<div>
