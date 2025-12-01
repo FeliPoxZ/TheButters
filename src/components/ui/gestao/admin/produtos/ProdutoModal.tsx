@@ -106,7 +106,7 @@ export default function ProdutoModal({
 						<FormInput
 							label="Nome do Produto"
 							name="nome"
-							placeholder="Ex: Notebook Dell"
+							placeholder="Ex: Cookie"
 							register={register}
 							error={errors.nome}
 						/>

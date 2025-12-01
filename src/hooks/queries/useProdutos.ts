@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { produtoSchema, ProdutoCreateSchema, ProdutoUpdateSchema } from "@/schemas/produtoSchema";
 import ProdutoClient from "@/services/ProdutoClient";
 
-const produtoClient = new ProdutoClient()
+const produtoClient = new ProdutoClient();
 
 // GET produtos de uma loja
 export const useProdutosByLoja = (lojaId?: string) =>
@@ -24,16 +24,22 @@ export const useCreateProduto = () => {
 			const res = await produtoClient.create(data);
 			return produtoSchema.parse(res);
 		},
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["produtos"] }),
+		onSuccess: () => {
+
+			queryClient.invalidateQueries({ queryKey: ["produtos"] });
+		},
+        onError: (err: any) => {
+            console.error(err)
+        }
 	});
 };
 
 // UPDATE produto
-export const useUpdateProduto = (id: string) => {
+export const useUpdateProduto = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: async (data: ProdutoUpdateSchema) => {
-			const res = await produtoClient.update(id, data);
+		mutationFn: async (params: { data: ProdutoUpdateSchema; id: string }) => {
+			const res = await produtoClient.update(params.id, params.data);
 			return produtoSchema.parse(res);
 		},
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["produtos"] }),

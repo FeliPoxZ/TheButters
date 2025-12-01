@@ -29,6 +29,7 @@ import {
 	CategoriaSchema,
 	CategoriaUpdateSchema,
 } from "@/schemas/categoriaSchema";
+import { useAddProdutoLoja, useCreateProduto, useUpdateProduto } from "@/hooks/queries/useProdutos";
 
 // TODO: Integração com query
 
@@ -51,6 +52,11 @@ export default function ProdutosPage() {
 	const { data: lojas = [] } = useLojas();
 	const { mutate: createCategoria, isPending: creatingCategoria } = useCreateCategoria();
 	const { mutate: updateCategoria, isPending: updatingCategoria } = useUpdateCategoria();
+
+	// HOOKS DO PRODUTO
+	const { mutate: createProduto, isPending: creatingProduto } = useCreateProduto();
+	const { mutate: updateProduto, isPending: updatingProduto } = useUpdateProduto();
+	const { mutate: addProdutoLoja } = useAddProdutoLoja();
 
 	useEffect(() => {
 		const fetchProdutos = async () => {
@@ -116,12 +122,6 @@ export default function ProdutosPage() {
 	};
 
 	const handleCategoriaSubmit = (data: CategoriaCreateSchema) => {
-		console.log(
-			"[ProdutosPage] handleCategoriaSubmit called with:",
-			data,
-			"editingCategoria:",
-			editingCategoria
-		);
 		/* if (editingCategoria) {
 			updateCategoria(
 				{ data: { nome: data.nome, descricao: data.descricao }, id: data.id },
@@ -135,7 +135,6 @@ export default function ProdutosPage() {
 		} else { */
 		createCategoria(data, {
 			onSuccess: () => {
-				console.log("[ProdutosPage] createCategoria success");
 				setCategoriaModalOpen(false);
 			},
 			onError: (err: any) => {
@@ -257,15 +256,67 @@ export default function ProdutosPage() {
 				}}
 				onSubmit={(data) => {
 					console.log("submit produto:", data);
-					// aqui você chama sua API:
-					// if (editingProduto) updateProduto(...)
-					// else createProduto(...)
-					setProdutoModalOpen(false);
+
+					// (1) CREATE
+					if (!editingProduto) {
+						createProduto(
+							{
+								nome: data.nome,
+								descricao: data.descricao,
+								preco: data.preco,
+								imagemc: data.imagemc,
+								categoriaid: data.categoriaid,
+							},
+							{
+								onSuccess: (created) => {
+									// created.id(a resposta do backend) → id do produto recém criado
+									// data.lojaid → vem do seu modal (seleção de lojas)
+
+									// Caso o produto pertença apenas a 1 loja:
+									if (data.lojaIds) {
+										addProdutoLoja(
+											{ produtoid: created.id, lojaid: data.lojaIds[0]},
+											{
+												onSuccess: () => {
+													setProdutoModalOpen(false);
+												},
+												onError: (err) => console.error("Erro ao vincular produto à loja:", err),
+											}
+										);
+									} else {
+										console.warn("Nenhuma loja selecionada para este produto.");
+										setProdutoModalOpen(false);
+									}
+								},
+							}
+						);
+						return;
+					}
+
+					// (3) UPDATE
+					updateProduto(
+						{
+							data: {
+								nome: data.nome,
+								descricao: data.descricao,
+								preco: data.preco,
+								imagemc: data.imagemc,
+								categoriaid: data.categoriaid,
+							},
+							id: "",
+						},
+						{
+							onSuccess: () => {
+								// (opcional) atualizar lojas também:
+								setProdutoModalOpen(false);
+							},
+						}
+					);
 				}}
 				produto={editingProduto ?? undefined}
 				categorias={categorias}
 				lojas={lojas ?? []}
-				isLoading={false} // ou seu loading real
+				isLoading={creatingProduto || updatingProduto}
 			/>
 			<CategoriaModal
 				isOpen={categoriaModalOpen}
