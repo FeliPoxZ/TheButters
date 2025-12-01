@@ -24,7 +24,11 @@ import {
 } from "@/hooks/queries/useCategorias";
 import { useLojas } from "@/hooks/queries/useLojas";
 import ProdutoClient from "@/services/ProdutoClient";
-import { CategoriaSchema } from "@/schemas/categoriaSchema";
+import {
+	CategoriaCreateSchema,
+	CategoriaSchema,
+	CategoriaUpdateSchema,
+} from "@/schemas/categoriaSchema";
 
 // TODO: Integração com query
 
@@ -111,8 +115,14 @@ export default function ProdutosPage() {
 		setCategoriaModalOpen(true);
 	};
 
-	const handleCategoriaSubmit = (data: CategoriaSchema) => {
-		if (editingCategoria) {
+	const handleCategoriaSubmit = (data: CategoriaCreateSchema) => {
+		console.log(
+			"[ProdutosPage] handleCategoriaSubmit called with:",
+			data,
+			"editingCategoria:",
+			editingCategoria
+		);
+		/* if (editingCategoria) {
 			updateCategoria(
 				{ data: { nome: data.nome, descricao: data.descricao }, id: data.id },
 				{
@@ -122,13 +132,17 @@ export default function ProdutosPage() {
 					},
 				}
 			);
-		} else {
-			createCategoria(data, {
-				onSuccess: () => {
-					setCategoriaModalOpen(false);
-				},
-			});
-		}
+		} else { */
+		createCategoria(data, {
+			onSuccess: () => {
+				console.log("[ProdutosPage] createCategoria success");
+				setCategoriaModalOpen(false);
+			},
+			onError: (err: any) => {
+				console.error("[ProdutosPage] createCategoria error:", err);
+			},
+		});
+		/* } */
 	};
 
 	return (

@@ -1,17 +1,15 @@
-"use client";
-
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Modal } from "@/components/common/Modal";
 import FormInput from "@/components/common/FormInput";
-import { categoriaSchema, CategoriaSchema } from "@/schemas/categoriaSchema";
+import { categoriaCreateSchema, CategoriaCreateSchema, CategoriaSchema } from "@/schemas/categoriaSchema"; // Importa o schema correto para criação
+import { useEffect } from "react";
 
 interface CategoriaModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	onSubmit: (data: CategoriaSchema) => void;
-	categoria?: { id: string; nome: string };
+	onSubmit: (data: CategoriaCreateSchema) => void; // Tipo atualizado para categoriaCreateSchema
+	categoria?: CategoriaSchema;
 	isLoading?: boolean;
 }
 
@@ -27,23 +25,28 @@ export default function CategoriaModal({
 		handleSubmit,
 		formState: { errors },
 		reset,
-	} = useForm<CategoriaSchema>({
-		resolver: zodResolver(categoriaSchema),
-		defaultValues: { nome: "" },
+	} = useForm<CategoriaCreateSchema>({
+		resolver: zodResolver(categoriaCreateSchema), // Usando o schema de criação
+		defaultValues: { nome: "", descricao: "" }, // Defina valores padrão
 	});
 
-	// Atualizar form ao abrir o modal
+	// Atualizar o formulário ao abrir o modal
 	useEffect(() => {
 		if (categoria) {
-			reset({ nome: categoria.nome });
+			reset({ nome: categoria.nome, descricao: categoria.descricao }); // Preencher os dados existentes
 		} else {
-			reset({ nome: "" });
+			reset({ nome: "", descricao: "" });
 		}
 	}, [categoria, reset, isOpen]);
 
 	const handleClose = () => {
 		reset();
 		onClose();
+	};
+
+	const handleSubmitForm = (data: CategoriaCreateSchema) => {
+		console.log("[CategoriaModal] handleSubmit ->", data); // Adicionei log aqui para verificar
+		onSubmit(data);
 	};
 
 	return (
@@ -56,13 +59,24 @@ export default function CategoriaModal({
 				</div>
 
 				<div className="p-6">
-					<form id="categoria-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+					<form
+						id="categoria-form"
+						onSubmit={handleSubmit(handleSubmitForm)} // Chamando o handleSubmit
+						className="space-y-4"
+					>
 						<FormInput
 							label="Nome da Categoria"
 							name="nome"
 							placeholder="Ex: Bebidas"
 							register={register}
-							error={errors.nome}
+							error={errors.nome} // Exibindo mensagem de erro se houver
+						/>
+						<FormInput
+							label="Descrição"
+							name="descricao"
+							placeholder="Descrição da categoria"
+							register={register}
+							error={errors.descricao} // Exibindo erro para descrição
 						/>
 					</form>
 				</div>
