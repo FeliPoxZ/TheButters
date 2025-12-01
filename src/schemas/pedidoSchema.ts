@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { produtoSchema } from "./produtoSchema";
 
 // =============================
 // CREATE
@@ -36,6 +37,13 @@ export type PedidoUpdateInput = z.infer<typeof pedidoUpdateSchema>;
 // =============================
 // RESPONSE
 // =============================
+export const itemSchema = z.object({
+	produto: produtoSchema,
+	quantidade: z.number(),
+});
+
+export const itemsSchema = z.array(itemSchema);
+
 export const pedidoResponseSchema = z.object({
 	id: z.string().uuid(),
 	precototal: z.number(),
@@ -49,7 +57,7 @@ export const pedidoResponseSchema = z.object({
 	loja: z.any().nullable(),
 	usuario: z.any().nullable(),
 	enderecousuario: z.any().nullable(),
-	items: z.array(z.any()),
+	items: itemsSchema,
 });
 
 export type PedidoResponse = z.infer<typeof pedidoResponseSchema>;

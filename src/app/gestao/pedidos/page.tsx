@@ -146,7 +146,7 @@ export default function PedidosPage() {
 									<td className="p-3 text-zinc-700">
 										<ul className="space-y-1">
 											{p.items.map((item) => (
-												<li key={item.id + p.id}>
+												<li key={item.produto.id + p.id + Date.now()}>
 													• {item.produto?.nome} ({item.quantidade}x)
 												</li>
 											))}
