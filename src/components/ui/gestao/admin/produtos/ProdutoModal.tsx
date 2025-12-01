@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm, Controller } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Modal } from "@/components/common/Modal";
 import {
@@ -12,16 +11,8 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import FormInput from "@/components/common/FormInput";
-import { useState } from "react";
-
-interface Produto {
-	id: string;
-	nome: string;
-	descricao?: string;
-	preco: number;
-	categoriaId: string;
-	lojaIds: string[];
-}
+import { useState, useEffect } from "react";
+import { produtoCreateSchema, ProdutoCreateSchema } from "@/schemas/produtoSchema";
 
 interface Categoria {
 	id: string;
@@ -34,20 +25,12 @@ interface Loja {
 	nome: string;
 }
 
-const produtoSchema = z.object({
-	nome: z.string().min(2, "Nome muito curto").max(100, "Nome muito longo"),
-	descricao: z.string().max(500, "Descrição muito longa").optional(),
-	preco: z.coerce.number().min(0, "Preço deve ser maior que 0"),
-	categoriaId: z.string().min(1, "Selecione uma categoria"),
-});
-
-type ProdutoSchema = z.infer<typeof produtoSchema>;
-
 interface ProdutoModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	onSubmit: (data: ProdutoSchema & { lojaIds: string[] }) => void;
-	produto?: Produto;
+	// agora o onSubmit espera os campos de criação/edição (produtoCreateSchema) + lojaIds
+	onSubmit: (data: ProdutoCreateSchema & { lojaIds: string[] }) => void;
+	produto?: Product;
 	categorias: Categoria[];
 	lojas: Loja[];
 	isLoading?: boolean;
@@ -62,21 +45,30 @@ export default function ProdutoModal({
 	lojas,
 	isLoading,
 }: ProdutoModalProps) {
+	// selected lojas (pré-seleciona se produto passado)
 	const [selectedLojas, setSelectedLojas] = useState<string[]>(produto?.lojaIds || []);
 
+	useEffect(() => {
+		// sempre que abrir para editar, sincroniza seleção de lojas
+		setSelectedLojas(produto?.lojaIds || []);
+	}, [produto?.lojaIds]);
+
+	// useForm baseado no shape de criação (produtoCreateSchema)
 	const {
 		register,
 		handleSubmit,
 		control,
 		formState: { errors },
 		reset,
-	} = useForm<ProdutoSchema>({
-		resolver: zodResolver(produtoSchema),
+	} = useForm<ProdutoCreateSchema>({
+		resolver: zodResolver(produtoCreateSchema),
 		defaultValues: {
-			nome: produto?.nome || "",
-			descricao: produto?.descricao || "",
-			preco: produto?.preco || 0,
-			categoriaId: produto?.categoriaId || "",
+			nome: produto?.nome ?? "",
+			descricao: produto?.descricao ?? "",
+			preco: produto?.preco ?? 0,
+			imagemc: produto?.imagemc ?? "string",
+			// produto vem com categoriaId (local), mapeamos para categoriaid do form
+			categoriaid: produto?.categoriaId ?? "",
 		},
 	});
 
@@ -86,7 +78,7 @@ export default function ProdutoModal({
 		onClose();
 	};
 
-	const handleFormSubmit = (data: ProdutoSchema) => {
+	const handleFormSubmit = (data: ProdutoCreateSchema) => {
 		onSubmit({ ...data, lojaIds: selectedLojas });
 		reset();
 		setSelectedLojas([]);
@@ -126,7 +118,7 @@ export default function ProdutoModal({
 							<textarea
 								placeholder="Descreva o produto..."
 								{...register("descricao")}
-								className="w-full px-3 py-2.5 rounded-xl border border-foreground/20 text-foreground bg-background/50 placeholder:text-foreground/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[80px] resize-none"
+								className="w-full px-3 py-2.5 rounded-xl border border-foreground/20 text-foreground bg-background/50 placeholder:text-foreground/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-20 resize-none"
 							/>
 							{errors.descricao && (
 								<p className="mt-1.5 text-xs text-soft-red">{errors.descricao.message}</p>
@@ -141,17 +133,19 @@ export default function ProdutoModal({
 								placeholder="0.00"
 								register={register}
 								error={errors.preco}
+								registerOptions={{ valueAsNumber: true }}
 							/>
 
 							<div>
 								<label className="block text-sm font-medium text-foreground/90 mb-1.5">
 									Categoria <span className="text-soft-red ml-1">*</span>
 								</label>
+
 								<Controller
-									name="categoriaId"
+									name="categoriaid"
 									control={control}
 									render={({ field }) => (
-										<Select value={field.value} onValueChange={field.onChange}>
+										<Select value={String(field.value ?? "")} onValueChange={field.onChange}>
 											<SelectTrigger className="w-full h-10 bg-background/50 border-foreground/20 text-foreground">
 												<SelectValue placeholder="Selecione uma categoria" />
 											</SelectTrigger>
@@ -165,18 +159,29 @@ export default function ProdutoModal({
 										</Select>
 									)}
 								/>
-								{errors.categoriaId && (
-									<p className="mt-1.5 text-xs text-soft-red">{errors.categoriaId.message}</p>
+								{errors.categoriaid && (
+									<p className="mt-1.5 text-xs text-soft-red">{errors.categoriaid.message}</p>
 								)}
 							</div>
 						</div>
+
+						{/* imagemc (campo obrigatório no create schema) */}
+						{/* <div>
+							<FormInput
+								label="URL da imagem"
+								name="imagemc"
+								placeholder="https://..."
+								register={register}
+								error={errors.imagemc}
+							/>
+						</div> */}
 
 						<div>
 							<label className="block text-sm font-medium text-foreground/90 mb-2">
 								Lojas <span className="text-foreground/50 text-xs">(selecione uma ou mais)</span>
 							</label>
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[200px] overflow-y-auto p-3 rounded-xl bg-background/30 border border-foreground/10">
-								{lojas.length === 0 ? (
+								{!lojas || lojas.length === 0 ? (
 									<p className="text-sm text-foreground/50 col-span-2">Nenhuma loja disponível</p>
 								) : (
 									lojas.map((loja) => (

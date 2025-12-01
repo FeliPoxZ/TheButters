@@ -34,11 +34,11 @@ export const useCreateCategoria = () => {
 };
 
 // UPDATE categoria
-export const useUpdateCategoria = (id: string) => {
+export const useUpdateCategoria = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: async (data: CategoriaUpdateSchema) => {
-			const res = await categoriaClient.update(id, data);
+		mutationFn: async (params: {data: CategoriaUpdateSchema, id:string}) => {
+			const res = await categoriaClient.update(params.id, params.data);
 			return categoriaSchema.parse(res);
 		},
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["categorias"] }),

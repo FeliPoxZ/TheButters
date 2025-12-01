@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Plus, Package, Tag, Filter } from "lucide-react";
 import CommonHeader from "@/components/common/CommonHeader";
 import ProdutoCard from "@/components/ui/gestao/admin/produtos/ProdutoCard";
@@ -17,11 +17,18 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 
-import { useProdutosByLoja, useCreateProduto } from "@/hooks/queries/useProdutos";
-import { useCategorias, useCreateCategoria } from "@/hooks/queries/useCategorias";
-import { useLojas } from "@/hooks/queries/useLojas"; // novo hook
-import { ProdutoSchema } from "@/schemas/produtoSchema";
+import {
+	useCategorias,
+	useCreateCategoria,
+	useUpdateCategoria,
+} from "@/hooks/queries/useCategorias";
+import { useLojas } from "@/hooks/queries/useLojas";
+import ProdutoClient from "@/services/ProdutoClient";
 import { CategoriaSchema } from "@/schemas/categoriaSchema";
+
+// TODO: Integração com query
+
+const produtoClient = new ProdutoClient();
 
 export default function ProdutosPage() {
 	const [produtoModalOpen, setProdutoModalOpen] = useState(false);
@@ -32,28 +39,54 @@ export default function ProdutosPage() {
 	const [filterLojaId, setFilterLojaId] = useState<string>("all");
 	const [filterCategoriaId, setFilterCategoriaId] = useState<string>("all");
 
+	const [apiProdutos, setApiProdutos] = useState<ApiProduct[]>([]);
+	const [loadingProdutos, setLoadingProdutos] = useState<boolean>(false);
+
 	// Queries
 	const { data: categorias = [] } = useCategorias();
 	const { data: lojas = [] } = useLojas();
+	const { mutate: createCategoria, isPending: creatingCategoria } = useCreateCategoria();
+	const { mutate: updateCategoria, isPending: updatingCategoria } = useUpdateCategoria();
 
-	const { data: apiProdutos = [] } = useProdutosByLoja(
-		filterLojaId === "all" ? undefined : filterLojaId
-	);
+	useEffect(() => {
+		const fetchProdutos = async () => {
+			if (!lojas) return;
+
+			setLoadingProdutos(true);
+			try {
+				if (filterLojaId === "all") {
+					const results = await Promise.all(
+						lojas.map((loja) => produtoClient.getAllByLoja(loja.id))
+					);
+					// filter nulls
+					const merged = results.flat().filter((p): p is ApiProduct => p !== null);
+					setApiProdutos(merged);
+				} else {
+					const data = await produtoClient.getAllByLoja(filterLojaId);
+					setApiProdutos(data ?? []);
+				}
+			} catch (err) {
+				console.error("Erro ao buscar produtos:", err);
+			} finally {
+				setLoadingProdutos(false);
+			}
+		};
+
+		fetchProdutos();
+	}, [filterLojaId, lojas]);
 
 	// Converte ApiProduct → Product
-	const produtos: Product[] = useMemo(
-		() =>
-			(apiProdutos ?? []).map((item) => ({
-				id: item.produto.id,
-				nome: item.produto.nome,
-				descricao: item.produto.descricao,
-				preco: item.produto.preco,
-				imagemc: item.produto.imagemc,
-				categoriaId: item.categoria.id,
-				lojaIds: filterLojaId === "all" ? lojas!.map((l) => l.id) : [filterLojaId],
-			})),
-		[apiProdutos, filterLojaId, lojas]
-	);
+	const produtos: Product[] = useMemo(() => {
+		return (apiProdutos ?? []).map((item) => ({
+			id: item.produto.id,
+			nome: item.produto.nome,
+			descricao: item.produto.descricao,
+			preco: item.produto.preco,
+			imagemc: item.produto.imagemc,
+			categoriaId: item.categoria.id,
+			lojaIds: filterLojaId === "all" ? lojas!.map((l) => l.id) : [filterLojaId],
+		}));
+	}, [apiProdutos, filterLojaId, lojas]);
 
 	const filteredProdutos = useMemo(() => {
 		return produtos.filter((produto) => {
@@ -62,9 +95,6 @@ export default function ProdutosPage() {
 			return categoriaMatch;
 		});
 	}, [produtos, filterCategoriaId]);
-
-	const { mutate: createProduto } = useCreateProduto();
-	const { mutate: createCategoria } = useCreateCategoria();
 
 	const openNovoProdutoModal = () => {
 		setEditingProduto(null);
@@ -79,6 +109,26 @@ export default function ProdutosPage() {
 	const openCategoriaModal = (categoria?: CategoriaSchema) => {
 		setEditingCategoria(categoria || null);
 		setCategoriaModalOpen(true);
+	};
+
+	const handleCategoriaSubmit = (data: CategoriaSchema) => {
+		if (editingCategoria) {
+			updateCategoria(
+				{ data: { nome: data.nome, descricao: data.descricao }, id: data.id },
+				{
+					onSuccess: () => {
+						setCategoriaModalOpen(false);
+						setEditingCategoria(null);
+					},
+				}
+			);
+		} else {
+			createCategoria(data, {
+				onSuccess: () => {
+					setCategoriaModalOpen(false);
+				},
+			});
+		}
 	};
 
 	return (
@@ -155,7 +205,9 @@ export default function ProdutosPage() {
 				</div>
 
 				{/* Produtos */}
-				{filteredProdutos.length === 0 ? (
+				{loadingProdutos ? (
+					<div className="text-center p-12 text-foreground/70">Carregando produtos...</div>
+				) : filteredProdutos.length === 0 ? (
 					<div className="bg-item rounded-2xl shadow-md p-12 text-center">
 						<Package className="w-16 h-16 text-foreground/90 mx-auto mb-4" />
 						<h3 className="text-xl font-semibold text-foreground/70 mb-2">
@@ -183,38 +235,34 @@ export default function ProdutosPage() {
 			</div>
 
 			{/* Modals */}
-			{/* <ProdutoModal
+			<ProdutoModal
 				isOpen={produtoModalOpen}
 				onClose={() => {
 					setProdutoModalOpen(false);
 					setEditingProduto(null);
 				}}
-				onSubmit={(data) =>
-					createProduto({
-						...data,
-					})
-				}
+				onSubmit={(data) => {
+					console.log("submit produto:", data);
+					// aqui você chama sua API:
+					// if (editingProduto) updateProduto(...)
+					// else createProduto(...)
+					setProdutoModalOpen(false);
+				}}
 				produto={editingProduto ?? undefined}
 				categorias={categorias}
-				lojas={lojas}
-				isLoading={false}
+				lojas={lojas ?? []}
+				isLoading={false} // ou seu loading real
 			/>
-
 			<CategoriaModal
 				isOpen={categoriaModalOpen}
 				onClose={() => {
 					setCategoriaModalOpen(false);
 					setEditingCategoria(null);
 				}}
-				onSubmit={(data) =>
-					createCategoria({
-						nome: data.nome,
-						descricao: data.descricao || "",
-					})
-				}
 				categoria={editingCategoria ?? undefined}
-				isLoading={false}
-			/> */}
+				onSubmit={handleCategoriaSubmit}
+				isLoading={creatingCategoria || updatingCategoria}
+			/>
 		</div>
 	);
 }
