@@ -63,6 +63,20 @@ class ProdutoClient {
 		}
 	};
 
+	// DELETE produto da loja
+	deleteFromLoja = async (params: {idLoja: string, idProduto: string}) => {
+		try {
+			await axios.delete(`${privateAPI}/loja-produtos/${params.idLoja}/${params.idProduto}`, {
+				headers: {
+					Authorization: `Bearer ${getToken()}`,
+				},
+			});
+		} catch (err: any) {
+			if (err?.response?.data) throw err.response.data as DefaultMessage;
+			throw err as DefaultMessage;
+		}
+	};
+
 	// ADD produto à loja (single)
 	addToLoja = async (produtoid: string, lojaid: string) => {
 		try {

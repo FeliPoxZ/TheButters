@@ -15,7 +15,6 @@ export function usePedido() {
 		queryFn: () => pedidoClient.getAll(),
 	});
 
-
 	// =============================
 	// CREATE
 	// =============================
@@ -48,10 +47,19 @@ export function usePedido() {
 		},
 	});
 
+	// =============================
+	// ADD ITENS
+	// =============================
+	const addItens = useMutation({
+		mutationFn: (params: { data: ApiItemsPedido; token: string }) =>
+			pedidoClient.addItens(params.data, params.token),
+	});
+
 	return {
 		getAllPedidos,
 		createPedido,
 		updatePedido,
-		deletePedido
+		deletePedido,
+		addItens
 	};
 }

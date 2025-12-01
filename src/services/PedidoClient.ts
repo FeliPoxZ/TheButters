@@ -20,6 +20,14 @@ class PedidoClient {
 		return res.data;
 	}
 
+	async addItens(data: ApiItemsPedido, token: string) {
+		await axiosInstance.post("/items/insert/bulk", data, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+	}
+
 	async getAll() {
 		const res = await axiosInstance.get<PedidoResponse[]>(`/pedidos`, {
 			headers: {

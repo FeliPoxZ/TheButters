@@ -25,12 +25,11 @@ export const useCreateProduto = () => {
 			return produtoSchema.parse(res);
 		},
 		onSuccess: () => {
-
 			queryClient.invalidateQueries({ queryKey: ["produtos"] });
 		},
-        onError: (err: any) => {
-            console.error(err)
-        }
+		onError: (err: any) => {
+			console.error(err);
+		},
 	});
 };
 
@@ -63,6 +62,28 @@ export const useAddProdutosLojaBulk = () => {
 	return useMutation({
 		mutationFn: async (payload: { lojaprodutos: { produtoid: string; lojaid: string }[] }) => {
 			return produtoClient.addToLojaBulk(payload.lojaprodutos);
+		},
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["produtos"] }),
+	});
+};
+
+// DELETE produtos
+export const useDeleteProduto = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async (id: string) => {
+			return produtoClient.delete(id);
+		},
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["produtos"] }),
+	});
+};
+
+// DELETE produtos da loja
+export const useDeleteProdutosLoja = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async (params: { idLoja: string; idProduto: string }) => {
+			return produtoClient.deleteFromLoja(params);
 		},
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["produtos"] }),
 	});

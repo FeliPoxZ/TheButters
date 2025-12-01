@@ -29,7 +29,12 @@ import {
 	CategoriaSchema,
 	CategoriaUpdateSchema,
 } from "@/schemas/categoriaSchema";
-import { useAddProdutoLoja, useCreateProduto, useUpdateProduto } from "@/hooks/queries/useProdutos";
+import {
+	useAddProdutoLoja,
+	useCreateProduto,
+	useDeleteProdutosLoja,
+	useUpdateProduto,
+} from "@/hooks/queries/useProdutos";
 
 // TODO: Integração com query
 
@@ -56,6 +61,7 @@ export default function ProdutosPage() {
 	// HOOKS DO PRODUTO
 	const { mutate: createProduto, isPending: creatingProduto } = useCreateProduto();
 	const { mutate: updateProduto, isPending: updatingProduto } = useUpdateProduto();
+	const { mutate: deleteProdutoLoja, isPending: deletingProdutoLoja } = useDeleteProdutosLoja();
 	const { mutate: addProdutoLoja } = useAddProdutoLoja();
 
 	useEffect(() => {
@@ -237,7 +243,16 @@ export default function ProdutosPage() {
 								categoria={categorias.find((c) => c.id === produto.categoriaId)}
 								lojas={lojas!}
 								onEdit={openProdutoModal}
-								onDelete={() => {}}
+								onDelete={() => {
+									deleteProdutoLoja(
+										{ idLoja: lojas![0].id, idProduto: produto.id },
+										{
+											onSuccess: () => {
+												window.location.reload();
+											},
+										}
+									);
+								}}
 								onRemoveFromLoja={() => {}}
 							/>
 						))}
@@ -275,7 +290,7 @@ export default function ProdutosPage() {
 									// Caso o produto pertença apenas a 1 loja:
 									if (data.lojaIds) {
 										addProdutoLoja(
-											{ produtoid: created.id, lojaid: data.lojaIds[0]},
+											{ produtoid: created.id, lojaid: data.lojaIds[0] },
 											{
 												onSuccess: () => {
 													setProdutoModalOpen(false);

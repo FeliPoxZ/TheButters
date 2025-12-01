@@ -15,6 +15,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { usePedido } from "@/hooks/queries/usePedido";
+import { toPrice } from "@/lib/utils";
 
 export default function PedidosPage() {
 	const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -108,7 +109,7 @@ export default function PedidosPage() {
 
 							{filteredPedidos.map((p) => (
 								<tr key={p.id} className="border-b border-orange-100 hover:bg-orange-50 transition">
-									<td className="p-3">
+									<td className="p-3 w-66">
 										<Select
 											defaultValue={p.statuspedido}
 											onValueChange={(value) =>
@@ -119,8 +120,9 @@ export default function PedidosPage() {
 													},
 												})
 											}
+											disabled={updatePedido.isPending}
 										>
-											<SelectTrigger className="w-44">
+											<SelectTrigger className="w-56">
 												<SelectValue placeholder="Status" />
 											</SelectTrigger>
 											<SelectContent>
@@ -135,7 +137,7 @@ export default function PedidosPage() {
 
 									<td className="p-3 text-zinc-700">{p.usuario?.nome ?? "—"}</td>
 
-									<td className="p-3 text-green-600 font-semibold">R$ {p.precototal.toFixed(2)}</td>
+									<td className="p-3 text-green-600 font-semibold">{toPrice(p.precototal)}</td>
 
 									<td className="p-3 text-zinc-600">
 										{new Date(p.datapedido).toLocaleString("pt-BR")}

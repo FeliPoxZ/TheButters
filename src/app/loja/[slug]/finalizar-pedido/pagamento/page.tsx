@@ -22,13 +22,14 @@ export default function Pagamento() {
 	const token = useCustomerStore((s) => s.token);
 	const getTotal = useBagStore((s) => s.useBagTotal);
 	const clearBag = useBagStore((s) => s.clearBag);
+	const items = useBagStore((s) => s.items);
 	const lojaId = useLojaStore((s) => s.lojaId);
 
 	const [total, setTotal] = useState(0);
 	const [observacao, setObservacao] = useState("");
 	const [mesa, setMesa] = useState<number | null>(null);
 
-	const { createPedido } = usePedido();
+	const { createPedido, addItens } = usePedido();
 
 	useEffect(() => {
 		setTotal(getTotal());
@@ -100,14 +101,24 @@ export default function Pagamento() {
 		};
 
 		createPedido.mutate(payload, {
-			onSuccess: () => {
-				toast.success("Pedido efetuado com sucesso!", {
-					autoClose: false,
-					onClose: () => {
-						clearBag();
-						router.replace(`/loja/${slug}/cardapio`);
-					},
-				});
+			onSuccess: (res) => {
+				const itensToAdd = items.map(
+					({ item, qtd }): ApiItems => ({ pedidoid: res.id, produtoid: item.id, quantidade: qtd })
+				);
+				addItens.mutate(
+					{ data: { items: itensToAdd }, token },
+					{
+						onSuccess: () => {
+							toast.success("Pedido efetuado com sucesso!", {
+								autoClose: false,
+								onClose: () => {
+									clearBag();
+									router.replace(`/loja/${slug}/cardapio`);
+								},
+							});
+						},
+					}
+				);
 			},
 			onError: () => {
 				toast.error("Erro ao criar pedido", { autoClose: ms("3s") });
@@ -169,11 +180,11 @@ export default function Pagamento() {
 						<div className="mt-4 sm:mt-10 w-full">
 							<button
 								onClick={handleCreatePedido}
-								disabled={createPedido.isPending}
+								disabled={createPedido.isPending || addItens.isPending}
 								className="flex items-center justify-center gap-2 w-full md:w-auto px-10 py-4 mt-6 rounded-xl bg-primary/90 text-lg text-primary-foreground/95 font-semibold hover:opacity-90 disabled:opacity-50"
 							>
 								{createPedido.isPending ? "Enviando pedido..." : "Efetuar Pedido"}
-								<BanknotesIcon className="text-inherit size-7"/>
+								<BanknotesIcon className="text-inherit size-7" />
 							</button>
 						</div>
 					</ColumnView>
