@@ -11,11 +11,10 @@ import { useLojaStore } from "../../stores/lojaStore";
 import { useEffect, useState } from "react";
 import { usePedido } from "@/hooks/queries/usePedido";
 import { toast } from "react-toastify";
-import { cn, toPrice } from "@/lib/utils";
+import { toPrice } from "@/lib/utils";
 import ms from "ms";
-import RowView from "@/components/layout/RowView";
-import Link from "next/link";
-import { UserIcon } from "@heroicons/react/24/outline";
+import AccountLink from "@/components/ui/cardapio/AccountLink";
+import { BanknotesIcon } from "@heroicons/react/24/outline";
 
 export default function Pagamento() {
 	const consumo = useCheckoutStore((s) => s.consumo);
@@ -117,21 +116,9 @@ export default function Pagamento() {
 	};
 
 	return (
-		<div className="grid grid-rows-[auto_1fr_auto] max-w-7xl h-screen mx-auto px-4 py-6 overflow-y-auto">
+		<div className="grid grid-rows-[auto_1fr_auto] max-w-7xl min-h-screen mx-auto px-4 py-6 overflow-y-auto">
 			<div className="bg-item rounded-2xl shadow-md overflow-hidden mb-6">
-				<CommonHeader
-					extra={
-						<RowView align="center" className={cn(customer && "gap-2", "text-extra-orange")}>
-							<p className="text-lg">{customer ? customer.nome : ""}</p>
-							<Link
-								href={`/loja/cliente${customer ? "" : "-login"}?redirect=${pathname}`}
-								className="flex justify-center items-center cursor-pointer rounded-full bg-banner/55 size-10 transition-all duration-200 hover:scale-110 shadow-sm"
-							>
-								<UserIcon className="size-6 text-inherit" />
-							</Link>
-						</RowView>
-					}
-				/>
+				<CommonHeader extra={<AccountLink redirect={pathname} />} />
 				<div className="py-4 px-6">
 					<h2 className="text-2xl md:text-3xl font-bold text-foreground/90 mb-3">
 						Finalização do Pedido
@@ -143,7 +130,7 @@ export default function Pagamento() {
 			<div className="relative bg-item min-h-full md:h-full md:overflow-hidden rounded-2xl shadow-md py-4 px-6">
 				<div className="flex flex-col md:flex-row h-full w-full">
 					<ColumnView className="w-full h-full">
-						<h2 className="text-foreground/90 text-xl mb-4">Finalize o pedido:</h2>
+						<h2 className="text-foreground/90 font-medium text-xl mb-4">Finalize o pedido:</h2>
 
 						{/* OBSERVAÇÃO */}
 						<div className="flex flex-col gap-3 w-full max-w-lg">
@@ -175,17 +162,18 @@ export default function Pagamento() {
 
 						{/* TOTAL */}
 						<div className="mt-6 text-lg font-semibold text-foreground/90">
-							Valor total: {toPrice(total)}
+							Valor total: <span className="text-on-soft-green/90">{toPrice(total)}</span>
 						</div>
 
 						{/* BOTÃO */}
-						<div className="mt-10">
+						<div className="mt-4 sm:mt-10 w-full">
 							<button
 								onClick={handleCreatePedido}
 								disabled={createPedido.isPending}
-								className="w-full md:w-auto px-10 py-4 mt-6 rounded-xl bg-primary text-primary-foreground font-semibold hover:opacity-90 disabled:opacity-50"
+								className="flex items-center justify-center gap-2 w-full md:w-auto px-10 py-4 mt-6 rounded-xl bg-primary/90 text-lg text-primary-foreground/95 font-semibold hover:opacity-90 disabled:opacity-50"
 							>
 								{createPedido.isPending ? "Enviando pedido..." : "Efetuar Pedido"}
+								<BanknotesIcon className="text-inherit size-7"/>
 							</button>
 						</div>
 					</ColumnView>

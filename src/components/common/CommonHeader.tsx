@@ -16,16 +16,16 @@ function CommonHeader({extra}: Props) {
 						<Image src={"/Capivara.webp"} alt="banner" fill priority className="object-contain" />
 					</div>
 				</div>
-				<section className="w-full  px-6">
+				<section className="w-full px-6">
 					<RowView justify={extra? "between" : "start"} align="center" className="h-full py-3">
-						<RowView align="center" className="gap-2">
-							<div className="relative h-20 md:h-26 border-2 border-white aspect-square rounded-full bg-primary -mt-10 md:-mt-16">
+						<div className="flex flex-col sm:flex-row gap-1 sm:gap-2 items-center">
+							<div className="relative size-20 md:size-26 border-2 border-white  rounded-full bg-primary -mt-10 md:-mt-16">
 								<Image src={"/Logo.webp"} alt="logo" fill priority className="object-contain" />
 							</div>
 							<h1 className="font-poppins font-semibold text-foreground/80 text-[1.4rem] md:text-3xl">
 								The Butters
 							</h1>
-						</RowView>
+						</div>
 						{extra}
 					</RowView>
 				</section>
